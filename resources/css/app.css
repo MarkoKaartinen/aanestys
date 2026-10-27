@@ -11,44 +11,51 @@
  */
 :root {
     color-scheme: light;
-    --canvas: oklch(98.5% 0.006 95);
+    --canvas: oklch(98.6% 0.004 210);
     --surface: oklch(100% 0 0);
-    --ink: oklch(24% 0.02 200);
-    --muted: oklch(50% 0.02 200);
-    --line: oklch(91% 0.01 150);
-    --accent: oklch(48% 0.1 180);
-    --accent-strong: oklch(40% 0.09 180);
-    --accent-soft: oklch(94% 0.04 180);
+    --surface-2: oklch(96.6% 0.006 215);
+    --ink: oklch(21% 0.02 235);
+    --muted: oklch(50% 0.018 235);
+    --line: oklch(91% 0.008 220);
+    --line-strong: oklch(83% 0.012 225);
+    --accent: oklch(50% 0.12 178);
+    --accent-strong: oklch(42% 0.1 178);
+    --accent-soft: oklch(95% 0.035 178);
     --on-accent: oklch(99% 0 0);
-    --winner: oklch(78% 0.14 80);
-    --winner-soft: oklch(95% 0.05 85);
-    --danger: oklch(52% 0.2 27);
+    --winner: oklch(77% 0.15 82);
+    --winner-soft: oklch(96% 0.05 88);
+    --danger: oklch(53% 0.2 27);
 }
 
 .dark {
     color-scheme: dark;
-    --canvas: oklch(18% 0.015 200);
-    --surface: oklch(22% 0.017 200);
-    --ink: oklch(95% 0.008 95);
-    --muted: oklch(72% 0.015 200);
-    --line: oklch(32% 0.02 200);
-    --accent: oklch(74% 0.12 178);
-    --accent-strong: oklch(80% 0.12 178);
-    --accent-soft: oklch(30% 0.05 180);
-    --on-accent: oklch(18% 0.015 200);
-    --winner: oklch(82% 0.14 85);
-    --winner-soft: oklch(32% 0.06 85);
+    --canvas: oklch(15.5% 0.012 240);
+    --surface: oklch(19.5% 0.014 240);
+    --surface-2: oklch(23% 0.016 240);
+    --ink: oklch(96% 0.006 220);
+    --muted: oklch(71% 0.014 230);
+    --line: oklch(29% 0.016 240);
+    --line-strong: oklch(37% 0.02 240);
+    --accent: oklch(78% 0.14 175);
+    --accent-strong: oklch(84% 0.13 175);
+    --accent-soft: oklch(28% 0.05 185);
+    --on-accent: oklch(17% 0.02 240);
+    --winner: oklch(82% 0.15 85);
+    --winner-soft: oklch(30% 0.06 85);
     --danger: oklch(72% 0.17 25);
 }
 
 @theme inline {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
     --color-canvas: var(--canvas);
     --color-surface: var(--surface);
+    --color-surface-2: var(--surface-2);
     --color-ink: var(--ink);
     --color-muted: var(--muted);
     --color-line: var(--line);
+    --color-line-strong: var(--line-strong);
     --color-accent: var(--accent);
     --color-accent-strong: var(--accent-strong);
     --color-accent-soft: var(--accent-soft);
@@ -59,12 +66,86 @@
 }
 
 @layer base {
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 5rem;
+    }
+
     body {
         @apply bg-canvas text-ink antialiased;
+        font-feature-settings: 'ss01', 'cv11';
+    }
+
+    h1,
+    h2,
+    h3 {
+        @apply tracking-tight;
+    }
+
+    ::selection {
+        background: color-mix(in oklab, var(--accent) 30%, transparent);
     }
 
     :focus-visible {
         @apply outline-2 outline-offset-2 outline-accent;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+    }
+}
+
+/* Small mono label above a heading or inside a card. */
+@utility eyebrow {
+    @apply font-mono text-xs font-medium tracking-wider text-muted uppercase;
+}
+
+/* Subtle dot grid, fading out towards the bottom. */
+@utility bg-dots {
+    background-image: radial-gradient(var(--line-strong) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: linear-gradient(to bottom, black 30%, transparent 95%);
+}
+
+/* Soft accent glow used behind the hero. */
+@utility bg-glow {
+    background-image: radial-gradient(60% 70% at 75% 0%, color-mix(in oklab, var(--accent) 16%, transparent), transparent);
+}
+
+/* Form controls, buttons and cards shared by the pages. */
+@utility btn {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+@layer components {
+    .field-label {
+        @apply mb-1.5 block text-sm font-medium;
+    }
+
+    .field-input {
+        @apply w-full rounded-lg border border-line-strong bg-surface px-3 py-2 text-ink transition-colors placeholder:text-muted hover:border-muted focus:border-accent focus:outline-2 focus:outline-offset-0 focus:outline-accent/30;
+    }
+
+    .field-error {
+        @apply mt-1.5 text-sm text-danger;
+    }
+
+    .field-hint {
+        @apply mt-1.5 text-sm text-muted;
+    }
+
+    .btn-primary {
+        @apply btn border-accent bg-accent text-on-accent hover:bg-accent-strong hover:border-accent-strong;
+    }
+
+    .btn-secondary {
+        @apply btn border-line-strong bg-surface text-ink hover:bg-surface-2;
+    }
+
+    .card {
+        @apply rounded-xl border border-line bg-surface shadow-sm;
     }
 }
 
@@ -75,7 +156,7 @@
  */
 @layer components {
     .cookie-reset button {
-        @apply cursor-pointer underline hover:text-ink;
+        @apply cursor-pointer transition-colors hover:text-ink;
     }
 
     #cookies-policy.cookies {
@@ -87,7 +168,7 @@
     }
 
     #cookies-policy .cookies__alert {
-        @apply m-4 max-h-[90%] w-[22em] max-w-[90%] rounded-2xl border border-line bg-surface text-ink shadow-lg;
+        @apply m-4 max-h-[90%] w-[22em] max-w-[90%] rounded-xl border border-line-strong bg-surface text-ink shadow-xl;
     }
 
     #cookies-policy .cookies__expandable {
@@ -171,7 +252,7 @@
     }
 
     #cookies-policy .cookiesBtn__link {
-        @apply block w-full cursor-pointer truncate rounded-full border border-accent bg-accent px-4 py-2.5 text-center text-sm font-semibold text-on-accent transition-colors hover:bg-accent-strong;
+        @apply block w-full cursor-pointer truncate rounded-lg border border-accent bg-accent px-4 py-2.5 text-center text-sm font-semibold text-on-accent transition-colors hover:bg-accent-strong;
     }
 
     #cookies-policy .cookiesBtn--essentials .cookiesBtn__link {
@@ -295,36 +376,6 @@
     }
 }
 
-/* Form controls and buttons shared by the pages. */
-@utility btn {
-    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border px-5 py-2 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60;
-}
-
-@layer components {
-    .field-label {
-        @apply mb-1 block text-sm font-medium;
-    }
-
-    .field-input {
-        @apply w-full rounded-xl border border-line bg-surface px-3 py-2 text-ink placeholder:text-muted;
-    }
-
-    .field-error {
-        @apply mt-1 text-sm text-danger;
-    }
-
-    .field-hint {
-        @apply mt-1 text-sm text-muted;
-    }
-
-    .btn-primary {
-        @apply btn border-accent bg-accent text-on-accent hover:bg-accent-strong;
-    }
-
-    .btn-secondary {
-        @apply btn border-line bg-surface text-ink hover:bg-accent-soft;
-    }
-}
 
 /* Long form text on the information pages. */
 @layer components {
