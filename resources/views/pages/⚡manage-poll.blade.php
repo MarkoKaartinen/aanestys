@@ -138,25 +138,20 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
 ?>
 
 <div class="space-y-8">
-    <header class="space-y-2">
-        <p class="text-sm font-medium text-accent-strong">{{ __('Poll admin') }}</p>
+    <header class="space-y-3">
+        <p class="eyebrow text-accent">{{ __('Poll admin') }}</p>
         <h1 class="text-3xl font-semibold tracking-tight">{{ $poll->title }}</h1>
-        <p class="text-muted">
-            {{ match ($this->phase) {
-                PollPhase::Scheduled => __('Voting has not started yet.'),
-                PollPhase::Suggestions => __('Suggestions are being collected.'),
-                PollPhase::Voting => __('Voting is open.'),
-                PollPhase::Closed => __('Voting has ended.'),
-            } }}
-            · {{ trans_choice(':count participant|:count participants', $this->participants) }}
+        <p class="flex flex-wrap items-center gap-3 text-muted">
+            <x-phase-badge :phase="$this->phase" />
+            <span class="font-mono text-sm">{{ trans_choice(':count participant|:count participants', $this->participants) }}</span>
         </p>
     </header>
 
-    <section class="space-y-2" x-data="{ copied: false }">
+    <section class="card space-y-2 p-5" x-data="{ copied: false }">
         <h2 class="font-medium">{{ __('Share link') }}</h2>
         <p class="field-hint">{{ __('Send this to the people who should vote.') }}</p>
         <div class="flex gap-2">
-            <input type="text" readonly value="{{ route('poll.show', $poll->slug) }}" class="field-input" x-ref="share" x-on:focus="$el.select()" aria-label="{{ __('Share link') }}">
+            <input type="text" readonly value="{{ route('poll.show', $poll->slug) }}" class="field-input font-mono text-sm" x-ref="share" x-on:focus="$el.select()" aria-label="{{ __('Share link') }}">
             <button type="button" class="btn-secondary" x-on:click="navigator.clipboard.writeText($refs.share.value); copied = true; setTimeout(() => copied = false, 2000)">
                 <span x-show="! copied">{{ __('Copy') }}</span>
                 <span x-show="copied" x-cloak>{{ __('Copied') }}</span>
@@ -164,10 +159,10 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
         </div>
     </section>
 
-    <section class="space-y-2" x-data="{ copied: false }">
+    <section class="card space-y-2 p-5" x-data="{ copied: false }">
         <h2 class="font-medium">{{ __('Results link') }}</h2>
         <div class="flex gap-2">
-            <input type="text" readonly value="{{ route('poll.results', $poll->slug) }}" class="field-input" x-ref="results" x-on:focus="$el.select()" aria-label="{{ __('Results link') }}">
+            <input type="text" readonly value="{{ route('poll.results', $poll->slug) }}" class="field-input font-mono text-sm" x-ref="results" x-on:focus="$el.select()" aria-label="{{ __('Results link') }}">
             <button type="button" class="btn-secondary" x-on:click="navigator.clipboard.writeText($refs.results.value); copied = true; setTimeout(() => copied = false, 2000)">
                 <span x-show="! copied">{{ __('Copy') }}</span>
                 <span x-show="copied" x-cloak>{{ __('Copied') }}</span>
@@ -176,11 +171,11 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
     </section>
 
     @if ($poll->live_token)
-        <section class="space-y-2" x-data="{ copied: false }">
+        <section class="card space-y-2 p-5" x-data="{ copied: false }">
             <h2 class="font-medium">{{ __('Live link for streaming') }}</h2>
             <p class="field-hint">{{ __('Always shows the live results, even when they are hidden from participants. Add it as a browser source in OBS. Add ?theme=dark or ?theme=light to force a theme.') }}</p>
             <div class="flex gap-2">
-                <input type="text" readonly value="{{ route('poll.live', $poll->live_token) }}" class="field-input" x-ref="live" x-on:focus="$el.select()" aria-label="{{ __('Live link for streaming') }}">
+                <input type="text" readonly value="{{ route('poll.live', $poll->live_token) }}" class="field-input font-mono text-sm" x-ref="live" x-on:focus="$el.select()" aria-label="{{ __('Live link for streaming') }}">
                 <button type="button" class="btn-secondary" x-on:click="navigator.clipboard.writeText($refs.live.value); copied = true; setTimeout(() => copied = false, 2000)">
                     <span x-show="! copied">{{ __('Copy') }}</span>
                     <span x-show="copied" x-cloak>{{ __('Copied') }}</span>
@@ -189,11 +184,11 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
         </section>
     @endif
 
-    <section class="space-y-2 rounded-2xl border border-winner bg-winner-soft p-4" x-data="{ copied: false }">
+    <section class="space-y-2 rounded-xl border border-winner bg-winner-soft p-5" x-data="{ copied: false }">
         <h2 class="font-medium">{{ __('Admin link') }}</h2>
         <p class="text-sm">{{ __('Keep this link private and save it now. It is the only way to manage the poll, and we cannot recover it for you.') }}</p>
         <div class="flex gap-2">
-            <input type="text" readonly value="{{ route('poll.manage', $token) }}" class="field-input" x-ref="admin" x-on:focus="$el.select()" aria-label="{{ __('Admin link') }}">
+            <input type="text" readonly value="{{ route('poll.manage', $token) }}" class="field-input font-mono text-sm" x-ref="admin" x-on:focus="$el.select()" aria-label="{{ __('Admin link') }}">
             <button type="button" class="btn-secondary" x-on:click="navigator.clipboard.writeText($refs.admin.value); copied = true; setTimeout(() => copied = false, 2000)">
                 <span x-show="! copied">{{ __('Copy') }}</span>
                 <span x-show="copied" x-cloak>{{ __('Copied') }}</span>
@@ -222,7 +217,7 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
         </section>
     @endif
 
-    <form wire:submit="save" class="space-y-4" novalidate>
+    <form wire:submit="save" class="card space-y-4 p-5" novalidate>
         <h2 class="font-medium">{{ __('Edit poll') }}</h2>
 
         <div>
@@ -267,7 +262,7 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
         <a href="{{ route('poll.results', $poll->slug) }}" class="btn-secondary">{{ __('See the results') }}</a>
     </div>
 
-    <section class="space-y-3 rounded-2xl border border-danger p-4">
+    <section class="space-y-3 rounded-xl border border-danger/50 p-5">
         <h2 class="font-medium text-danger">{{ __('Danger zone') }}</h2>
         <div class="flex flex-wrap gap-3">
             @if ($this->phase !== PollPhase::Closed)

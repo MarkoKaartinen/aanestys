@@ -262,8 +262,9 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
         "
     @endif
 >
-    <header class="space-y-2">
-        <h1 class="text-3xl font-semibold tracking-tight">{{ $poll->title }}</h1>
+    <header class="space-y-3">
+        <x-phase-badge :phase="$this->phase" />
+        <h1 class="text-3xl font-semibold sm:text-4xl">{{ $poll->title }}</h1>
         @if ($poll->description)
             <p class="whitespace-pre-line text-muted">{{ $poll->description }}</p>
         @endif
@@ -281,11 +282,11 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
     @endif
 
     @if ($this->phase === PollPhase::Voting && $poll->options->count() < 2)
-        <p class="rounded-xl bg-accent-soft px-4 py-3 text-accent-strong">{{ __('This poll does not have enough options to vote on.') }}</p>
+        <p class="rounded-lg border border-accent/25 bg-accent-soft px-4 py-3 text-sm text-accent-strong">{{ __('This poll does not have enough options to vote on.') }}</p>
     @elseif ($this->phase === PollPhase::Voting)
         <form wire:submit="vote" class="space-y-6" novalidate>
             @if ($hasVoted && ! $justSaved)
-                <p class="rounded-xl bg-accent-soft px-4 py-3 text-sm text-accent-strong">
+                <p class="rounded-lg border border-accent/25 bg-accent-soft px-4 py-3 text-sm text-accent-strong">
                     {{ __('You have already voted. You can change your vote until voting ends.') }}
                 </p>
             @endif
@@ -294,7 +295,7 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
                 <fieldset class="space-y-2">
                     <legend class="field-label">{{ __('Choose one option.') }}</legend>
                     @foreach ($poll->options as $option)
-                        <label wire:key="option-{{ $option->id }}" class="flex cursor-pointer items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3 has-checked:border-accent has-checked:bg-accent-soft">
+                        <label wire:key="option-{{ $option->id }}" class="flex cursor-pointer items-center gap-3 rounded-lg border border-line-strong bg-surface px-4 py-3 transition-colors hover:border-muted has-checked:border-accent has-checked:bg-accent-soft">
                             <input type="radio" wire:model="choice" value="{{ $option->id }}" class="size-4 accent-[var(--accent)]">
                             <span>{{ $option->displayLabel($viewerTimezone) }}</span>
                         </label>
@@ -306,7 +307,7 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
                         {{ $poll->max_choices ? __('Choose up to :max options.', ['max' => $poll->max_choices]) : __('Choose as many as you like.') }}
                     </legend>
                     @foreach ($poll->options as $option)
-                        <label wire:key="option-{{ $option->id }}" class="flex cursor-pointer items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3 has-checked:border-accent has-checked:bg-accent-soft">
+                        <label wire:key="option-{{ $option->id }}" class="flex cursor-pointer items-center gap-3 rounded-lg border border-line-strong bg-surface px-4 py-3 transition-colors hover:border-muted has-checked:border-accent has-checked:bg-accent-soft">
                             <input type="checkbox" wire:model="selected" value="{{ $option->id }}" class="size-4 accent-[var(--accent)]">
                             <span>{{ $option->displayLabel($viewerTimezone) }}</span>
                         </label>
@@ -368,12 +369,12 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
             </p>
         </form>
     @elseif ($this->phase === PollPhase::Scheduled)
-        <p class="rounded-xl bg-accent-soft px-4 py-3 text-accent-strong">
+        <p class="rounded-lg border border-accent/25 bg-accent-soft px-4 py-3 text-sm text-accent-strong">
             {{ __('Voting opens :date.', ['date' => $poll->voting_starts_at->setTimezone($viewerTimezone)->isoFormat('LLLL')]) }}
         </p>
     @elseif ($this->phase === PollPhase::Suggestions)
         <section class="space-y-4">
-            <p class="rounded-xl bg-accent-soft px-4 py-3 text-accent-strong">
+            <p class="rounded-lg border border-accent/25 bg-accent-soft px-4 py-3 text-sm text-accent-strong">
                 {{ __('Suggestions are being collected. Voting starts :date.', ['date' => $poll->voting_starts_at->setTimezone($viewerTimezone)->isoFormat('LLLL')]) }}
             </p>
 
@@ -402,7 +403,7 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
             @if ($poll->options->isNotEmpty())
                 <ul class="space-y-2">
                     @foreach ($poll->options as $option)
-                        <li wire:key="suggestion-{{ $option->id }}" class="flex items-center gap-2 rounded-xl border border-line bg-surface px-4 py-3">
+                        <li wire:key="suggestion-{{ $option->id }}" class="flex items-center gap-2 rounded-lg border border-line-strong bg-surface px-4 py-3 transition-colors hover:border-muted">
                             <span class="flex-1">{{ $option->displayLabel($viewerTimezone) }}</span>
                             @if (in_array($option->id, $this->ownSuggestionIds, true))
                                 <span class="text-sm text-muted">{{ __('yours') }}</span>
@@ -416,7 +417,7 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
             @endif
         </section>
     @else
-        <p class="rounded-xl bg-accent-soft px-4 py-3 text-accent-strong">{{ __('Voting has ended.') }}</p>
+        <p class="rounded-lg border border-accent/25 bg-accent-soft px-4 py-3 text-sm text-accent-strong">{{ __('Voting has ended.') }}</p>
         <a href="{{ route('poll.results', $poll->slug) }}" class="btn-primary">{{ __('See the results') }}</a>
     @endif
 </div>

@@ -62,21 +62,21 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
     @if ($this->phase !== PollPhase::Closed) wire:poll.5s.visible @endif
 >
     <header class="space-y-2">
-        <p class="text-sm font-medium text-accent-strong">
+        <p class="eyebrow text-accent">
             {{ $this->phase === PollPhase::Closed ? __('Final results') : __('Live results') }}
         </p>
-        <h1 class="text-3xl font-semibold tracking-tight">{{ $poll->title }}</h1>
+        <h1 class="text-3xl font-semibold sm:text-4xl">{{ $poll->title }}</h1>
         @if ($poll->resultsVisibleToParticipants())
             <p class="text-muted">{{ trans_choice(':count participant|:count participants', $this->standings['participants']) }}</p>
         @endif
     </header>
 
     @if (! $poll->resultsVisibleToParticipants())
-        <p class="rounded-xl bg-accent-soft px-4 py-3 text-accent-strong">{{ __('The creator has hidden the results until voting ends.') }}</p>
+        <p class="rounded-lg border border-accent/25 bg-accent-soft px-4 py-3 text-sm text-accent-strong">{{ __('The creator has hidden the results until voting ends.') }}</p>
     @else
         @if ($this->phase === PollPhase::Closed && $this->leaders !== [])
-            <div class="rounded-2xl border border-winner bg-winner-soft p-4">
-                <p class="text-sm font-medium">{{ count($this->leaders) > 1 ? __('Tie') : __('Winner') }}</p>
+            <div class="rounded-xl border border-winner bg-winner-soft p-5">
+                <p class="eyebrow">{{ count($this->leaders) > 1 ? __('Tie') : __('Winner') }}</p>
                 <p class="text-xl font-semibold">
                     {{ collect($this->leaders)->map(fn ($row) => $poll->options->firstWhere('id', $row['option_id'])->displayLabel($viewerTimezone))->join(' · ') }}
                 </p>

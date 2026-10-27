@@ -178,5 +178,8 @@
     "Start": "Aloita",
     "Create your poll": "Luo äänestyksesi",
     "Timing": "Ajoitus",
-    "Results": "Tulokset"
+    "Results": "Tulokset",
+    "Scheduled": "Ajastettu",
+    "Open": "Auki",
+    "Closed": "Suljettu"
 }
