@@ -17,8 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // The cookie consent package sets its cookie outside the web middleware
-        // group, so the cookie is not encrypted and must not be decrypted.
-        $middleware->encryptCookies(except: [env('COOKIE_CONSENT_NAME', 'cookie_consent')]);
+        // group, so the cookie is not encrypted and must not be decrypted. The
+        // name matches cookieconsent.cookie.name.
+        $middleware->encryptCookies(except: ['cookie_consent']);
 
         $middleware->web(remove: [
             SubstituteBindings::class,

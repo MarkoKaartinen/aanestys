@@ -35,7 +35,7 @@ return [
     */
 
     'cookie' => [
-        'name' => env('COOKIE_CONSENT_NAME', 'cookie_consent'),
+        'name' => 'cookie_consent', // Also excluded from encryption in bootstrap/app.php.
         'duration' => (60 * 24 * 365),
         'domain' => null,
     ],

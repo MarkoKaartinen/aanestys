@@ -34,7 +34,7 @@ class RedirectToPreferredLocale
         }
 
         // The switcher URL already carries the query string.
-        return redirect(Route::localizedSwitcherUrl($preferred));
+        return redirect()->to(Route::localizedSwitcherUrl($preferred));
     }
 
     /**
