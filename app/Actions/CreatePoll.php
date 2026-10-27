@@ -6,14 +6,15 @@ use App\Enums\Category;
 use App\Enums\VotingMethod;
 use App\Models\Poll;
 use Carbon\CarbonInterface;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CreatePoll
 {
     /**
-     * Create a poll with its options. Voting opens immediately.
+     * Create a poll with its options. Voting opens immediately, unless a
+     * suggestion round is asked for: then participants suggest options until
+     * suggestions_ends_at and voting starts at that moment.
      *
      * The admin token is only returned here; the database keeps its hash. Dates
      * with a time are entered in the poll's timezone and stored as UTC.
@@ -28,6 +29,8 @@ class CreatePoll
      *     timezone: string,
      *     includes_time?: bool,
      *     voting_ends_at: CarbonInterface,
+     *     suggestions_ends_at?: CarbonInterface|null,
+     *     max_suggestions?: int|null,
      *     options: list<array{label: string|null, date: string|null, time: string|null}>,
      * }  $data
      * @return array{poll: Poll, admin_token: string}
@@ -48,14 +51,17 @@ class CreatePoll
                 'ranking_limit' => $data['voting_method'] === VotingMethod::Ranking ? ($data['ranking_limit'] ?? null) : null,
                 'timezone' => $data['timezone'],
                 'includes_time' => $data['category'] === Category::Dates && ($data['includes_time'] ?? false),
-                'voting_starts_at' => now(),
+                'max_suggestions' => $data['max_suggestions'] ?? 1,
+                'suggestions_starts_at' => isset($data['suggestions_ends_at']) ? now() : null,
+                'suggestions_ends_at' => $data['suggestions_ends_at'] ?? null,
+                'voting_starts_at' => $data['suggestions_ends_at'] ?? now(),
                 'voting_ends_at' => $data['voting_ends_at'],
             ]);
 
             foreach ($data['options'] as $position => $option) {
                 $poll->options()->create([
                     'position' => $position,
-                    ...$this->optionAttributes($poll, $option),
+                    ...$poll->optionAttributes($option),
                 ]);
             }
 
@@ -63,25 +69,6 @@ class CreatePoll
         });
 
         return ['poll' => $poll, 'admin_token' => $adminToken];
-    }
-
-    /**
-     * @param  array{label: string|null, date: string|null, time: string|null}  $option
-     * @return array{label: string|null, date: string|null, starts_at: CarbonInterface|null}
-     */
-    private function optionAttributes(Poll $poll, array $option): array
-    {
-        if ($poll->category === Category::Custom) {
-            return ['label' => $option['label'], 'date' => null, 'starts_at' => null];
-        }
-
-        if ($poll->includes_time) {
-            $startsAt = Carbon::parse($option['date'].' '.$option['time'], $poll->timezone)->utc();
-
-            return ['label' => null, 'date' => null, 'starts_at' => $startsAt];
-        }
-
-        return ['label' => null, 'date' => $option['date'], 'starts_at' => null];
     }
 
     /**

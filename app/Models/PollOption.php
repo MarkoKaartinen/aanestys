@@ -25,6 +25,13 @@ class PollOption extends Model
     protected $guarded = [];
 
     /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
+     */
+    protected $hidden = ['suggested_by_hash'];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

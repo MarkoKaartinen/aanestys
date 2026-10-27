@@ -91,3 +91,18 @@ test('ignores the time flag outside the dates category', function () {
 
     expect($poll->includes_time)->toBeFalse();
 });
+
+test('a suggestion round starts now and voting begins when it ends', function () {
+    $suggestionsEnd = now()->addDays(2);
+
+    ['poll' => $poll] = (new CreatePoll)->handle(pollData([
+        'suggestions_ends_at' => $suggestionsEnd,
+        'max_suggestions' => 3,
+        'options' => [],
+    ]));
+
+    expect($poll->phase())->toBe(PollPhase::Suggestions)
+        ->and($poll->max_suggestions)->toBe(3)
+        ->and($poll->voting_starts_at->toDateTimeString())->toBe($suggestionsEnd->toDateTimeString())
+        ->and($poll->options)->toHaveCount(0);
+});

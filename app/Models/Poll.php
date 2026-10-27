@@ -104,6 +104,38 @@ class Poll extends Model
     }
 
     /**
+     * Whether options may still be added or removed. Once voting starts the
+     * options are locked, because votes refer to them.
+     */
+    public function canEditOptions(): bool
+    {
+        return in_array($this->phase(), [PollPhase::Scheduled, PollPhase::Suggestions], true);
+    }
+
+    /**
+     * Turn the raw input for one option into the columns it is stored in. Dates
+     * with a time are entered in the given timezone (the poll's by default) and
+     * stored as UTC.
+     *
+     * @param  array{label?: string|null, date?: string|null, time?: string|null}  $option
+     * @return array{label: string|null, date: string|null, starts_at: CarbonInterface|null}
+     */
+    public function optionAttributes(array $option, ?string $timezone = null): array
+    {
+        if ($this->category === Category::Custom) {
+            return ['label' => $option['label'] ?? null, 'date' => null, 'starts_at' => null];
+        }
+
+        if ($this->includes_time) {
+            $startsAt = Carbon::parse(($option['date'] ?? '').' '.($option['time'] ?? '00:00'), $timezone ?? $this->timezone)->utc();
+
+            return ['label' => null, 'date' => null, 'starts_at' => $startsAt];
+        }
+
+        return ['label' => null, 'date' => $option['date'] ?? null, 'starts_at' => null];
+    }
+
+    /**
      * Find the poll an admin token belongs to.
      */
     public static function findByAdminToken(string $token): ?self
