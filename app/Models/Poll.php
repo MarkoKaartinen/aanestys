@@ -82,6 +82,14 @@ class Poll extends Model
     }
 
     /**
+     * Find the poll an admin token belongs to.
+     */
+    public static function findByAdminToken(string $token): ?self
+    {
+        return static::where('admin_token_hash', static::hashToken($token))->first();
+    }
+
+    /**
      * Work out the phase from the timestamps, so nothing has to flip a status.
      * Closing the suggestions early means setting suggestions_ends_at to now.
      */
