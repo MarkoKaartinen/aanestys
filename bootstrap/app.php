@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // The cookie consent package sets its cookie outside the web middleware
+        // group, so the cookie is not encrypted and must not be decrypted.
+        $middleware->encryptCookies(except: [env('COOKIE_CONSENT_NAME', 'cookie_consent')]);
+
         $middleware->web(remove: [
             SubstituteBindings::class,
         ]);
