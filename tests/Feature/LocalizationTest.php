@@ -3,14 +3,14 @@
 test('home page is served in English without a locale prefix', function () {
     $this->get('/')
         ->assertOk()
-        ->assertSee('Make a decision together')
+        ->assertSee('Ask a group. Get an answer.')
         ->assertSee('lang="en"', false);
 });
 
 test('home page is served in Finnish under the fi prefix', function () {
     $this->get('/fi')
         ->assertOk()
-        ->assertSee('Päättäkää yhdessä')
+        ->assertSee('Kysy ryhmältä. Saat vastauksen.')
         ->assertSee('lang="fi"', false);
 });
 

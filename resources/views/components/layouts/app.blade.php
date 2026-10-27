@@ -37,7 +37,7 @@
         @livewireStyles
         @cookieconsentscripts
     </head>
-    <body class="flex min-h-screen flex-col">
+    <body class="flex min-h-screen flex-col overflow-x-clip">
         <a href="#main" class="sr-only rounded-lg bg-surface px-3 py-2 focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50">{{ __('Skip to content') }}</a>
 
         <header class="sticky top-0 z-40 border-b border-line bg-canvas/80 backdrop-blur">
