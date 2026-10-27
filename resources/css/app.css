@@ -325,3 +325,43 @@
         @apply btn border-line bg-surface text-ink hover:bg-accent-soft;
     }
 }
+
+/* Long form text on the information pages. */
+@layer components {
+    .content {
+        @apply space-y-4 leading-relaxed;
+    }
+
+    .content h1 {
+        @apply text-3xl font-semibold tracking-tight;
+    }
+
+    .content h2 {
+        @apply pt-4 text-xl font-semibold;
+    }
+
+    .content ul {
+        @apply list-disc space-y-1 pl-6;
+    }
+
+    .content a {
+        @apply text-accent-strong underline;
+    }
+
+    .content code {
+        @apply rounded bg-accent-soft px-1 py-0.5 text-sm;
+    }
+
+    .content table {
+        @apply w-full text-left text-sm;
+    }
+
+    .content th,
+    .content td {
+        @apply border-b border-line px-2 py-2 align-top;
+    }
+
+    .content h3 {
+        @apply pt-2 font-medium;
+    }
+}

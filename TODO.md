@@ -13,13 +13,18 @@ Source: MVP plan. Check items off as they ship.
 
 ## Content pages
 
-- [ ] About
-- [ ] FAQ
-- [ ] Privacy policy (Hetzner Finland, SES EU, Plausible, 90 day retention)
+- [x] About
+- [x] FAQ
+- [x] Privacy policy (Hetzner Finland, SES EU, Plausible, 90 day retention)
 - [x] Cookie consent banner installed (whitecube, `dev-main`, Finnish translation)
-- [ ] Cookies page (the banner policy link in `config/cookieconsent.php`)
+- [x] Cookies page (the banner policy link in `config/cookieconsent.php`)
 - [ ] Switch whitecube from `dev-main` to a tagged release once one supports Laravel 13
 - [ ] Test `wire:navigate` with localized routes once there are Livewire pages
+
+## Before launch
+
+- [ ] Set `OPERATOR_NAME` and `CONTACT_EMAIL`, and have the privacy policy and cookie texts reviewed (they are drafts)
+- [ ] Check how long the web server keeps access logs and update the privacy policy to match
 
 ## Poll core (MVP)
 
@@ -31,7 +36,7 @@ Source: MVP plan. Check items off as they ship.
 - [x] Share link and secret admin link (admin token stored hashed)
 - [x] Voting: single choice, multiple choice, ranking (Borda, full or Top N chosen by the creator)
 - [x] Voter token cookie, votes can be changed while the poll is open
-- [ ] Rate limits for voting (done) and poll creation
+- [x] Rate limits for voting, suggestions and poll creation
 - [x] Datetime options with timezone on creation (creator zone → UTC)
 - [x] Results page with winner, ties and totals
 - [x] Admin: edit, close, delete, copy links
@@ -65,5 +70,5 @@ Source: MVP plan. Check items off as they ship.
 ## Infrastructure
 
 - [ ] Hetzner server (Finland), Redis, Horizon under a process supervisor
-- [ ] Self-hosted Plausible, script served from our own domain
+- [ ] Self-hosted Plausible, script served from our own domain; exclude `/manage/*` (it holds the secret admin token) and consider `/p/*`
 - [ ] Amazon SES (EU region), when email is added

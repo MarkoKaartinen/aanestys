@@ -44,8 +44,14 @@
 
         <footer class="border-t border-line text-sm text-muted">
             <div class="mx-auto max-w-3xl px-4 py-6">
-                <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
                     <span>{{ config('app.name') }}</span>
+                    <nav class="flex flex-wrap gap-x-4 gap-y-1" aria-label="{{ __('Information') }}">
+                        <a href="{{ route('about') }}" class="hover:text-ink hover:underline">{{ __('About') }}</a>
+                        <a href="{{ route('faq') }}" class="hover:text-ink hover:underline">{{ __('FAQ') }}</a>
+                        <a href="{{ route('privacy') }}" class="hover:text-ink hover:underline">{{ __('Privacy') }}</a>
+                        <a href="{{ route('cookies') }}" class="hover:text-ink hover:underline">{{ __('Cookies') }}</a>
+                    </nav>
                     @cookieconsentbutton(action: 'reset', label: __('cookieConsent::cookies.manage'), attributes: ['class' => 'cookie-reset'])
                 </div>
             </div>

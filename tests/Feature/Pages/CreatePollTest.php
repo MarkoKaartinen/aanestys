@@ -157,3 +157,15 @@ test('requires a suggestion end time when collecting suggestions', function () {
         ->call('save')
         ->assertHasErrors(['suggestionsEndAt' => 'required']);
 });
+
+test('limits how many polls one client can create', function () {
+    for ($i = 0; $i < 10; $i++) {
+        fillPoll(Livewire::test('pages::create-poll'))->call('save')->assertHasNoErrors();
+    }
+
+    fillPoll(Livewire::test('pages::create-poll'))
+        ->call('save')
+        ->assertHasErrors(['title']);
+
+    expect(Poll::count())->toBe(10);
+});

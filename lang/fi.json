@@ -123,5 +123,11 @@
     "Suggestions": "Ehdotukset",
     "Remove this option?": "Poistetaanko tämä vaihtoehto?",
     "Close the suggestions and start voting now?": "Suljetaanko ehdotukset ja aloitetaanko äänestys nyt?",
-    "Close suggestions and start voting": "Sulje ehdotukset ja aloita äänestys"
+    "Close suggestions and start voting": "Sulje ehdotukset ja aloita äänestys",
+    "Information": "Tietoa",
+    "About": "Tietoa palvelusta",
+    "FAQ": "UKK",
+    "Privacy": "Tietosuoja",
+    "Cookies": "Evästeet",
+    "Too many polls created. Try again later.": "Liian monta äänestystä luotu. Yritä myöhemmin uudelleen."
 }

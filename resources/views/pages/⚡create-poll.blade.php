@@ -3,6 +3,7 @@
 use App\Actions\CreatePoll;
 use App\Enums\Category;
 use App\Enums\VotingMethod;
+use App\Support\Throttle;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -127,6 +128,12 @@ new class extends Component
         }
 
         $this->validate();
+
+        if (Throttle::exceeded('create-poll', 10, 3600)) {
+            $this->addError('title', __('Too many polls created. Try again later.'));
+
+            return;
+        }
 
         $endsAt = Carbon::parse($this->endsAt, $this->timezone)->utc();
         $suggestionsEnd = $this->collectSuggestions ? Carbon::parse($this->suggestionsEndAt, $this->timezone)->utc() : null;
