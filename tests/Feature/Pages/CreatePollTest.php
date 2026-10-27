@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\Category;
+use App\Enums\PollPhase;
 use App\Enums\VotingMethod;
 use App\Models\Poll;
 use Livewire\Features\SupportTesting\Testable;
@@ -110,4 +111,49 @@ test('creates a dates poll with times in the chosen timezone', function () {
 
 test('create page is served in Finnish under the fi prefix', function () {
     $this->get('/fi')->assertOk()->assertSee('Luo äänestys');
+});
+
+test('creates a poll that collects suggestions first', function () {
+    fillPoll(Livewire::test('pages::create-poll'))
+        ->set('collectSuggestions', true)
+        ->set('suggestionsEndAt', now()->addDays(2)->format('Y-m-d\TH:i'))
+        ->set('maxSuggestions', 3)
+        ->set('options.0.label', '')
+        ->set('options.1.label', '')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $poll = Poll::firstOrFail();
+
+    expect($poll->phase())->toBe(PollPhase::Suggestions)
+        ->and($poll->max_suggestions)->toBe(3)
+        ->and($poll->options)->toHaveCount(0);
+});
+
+test('keeps starting options when collecting suggestions', function () {
+    fillPoll(Livewire::test('pages::create-poll'))
+        ->set('collectSuggestions', true)
+        ->set('suggestionsEndAt', now()->addDays(2)->format('Y-m-d\TH:i'))
+        ->set('options.1.label', '')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect(Poll::firstOrFail()->options->pluck('label')->all())->toBe(['Dune']);
+});
+
+test('requires the suggestion end to come before the voting end', function () {
+    fillPoll(Livewire::test('pages::create-poll'))
+        ->set('collectSuggestions', true)
+        ->set('suggestionsEndAt', now()->addMonth()->format('Y-m-d\TH:i'))
+        ->call('save')
+        ->assertHasErrors(['suggestionsEndAt']);
+
+    expect(Poll::count())->toBe(0);
+});
+
+test('requires a suggestion end time when collecting suggestions', function () {
+    fillPoll(Livewire::test('pages::create-poll'))
+        ->set('collectSuggestions', true)
+        ->call('save')
+        ->assertHasErrors(['suggestionsEndAt' => 'required']);
 });

@@ -90,6 +90,28 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
         $this->saved = true;
     }
 
+    public function removeOption(int $id): void
+    {
+        $poll = $this->ownPoll();
+
+        if ($poll->canEditOptions()) {
+            $poll->options()->whereKey($id)->delete();
+        }
+
+        $this->poll = $poll;
+    }
+
+    public function closeSuggestions(): void
+    {
+        $poll = $this->ownPoll();
+
+        if ($poll->phase() === PollPhase::Suggestions) {
+            $poll->forceFill(['suggestions_ends_at' => now(), 'voting_starts_at' => now()])->save();
+        }
+
+        $this->poll = $poll;
+    }
+
     public function closeNow(): void
     {
         $poll = $this->ownPoll();
@@ -159,6 +181,27 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
             </button>
         </div>
     </section>
+
+    @if ($poll->suggestions_starts_at)
+        <section class="space-y-3">
+            <h2 class="font-medium">{{ __('Suggestions') }} ({{ $poll->options->count() }})</h2>
+
+            @forelse ($poll->options as $option)
+                <div wire:key="option-{{ $option->id }}" class="flex items-center gap-2 rounded-xl border border-line bg-surface px-4 py-2">
+                    <span class="flex-1">{{ $option->displayLabel($poll->timezone) }}</span>
+                    @if ($poll->canEditOptions())
+                        <button type="button" wire:click="removeOption({{ $option->id }})" wire:confirm="{{ __('Remove this option?') }}" class="btn-secondary px-3 py-0.5" aria-label="{{ __('Remove option') }}">&times;</button>
+                    @endif
+                </div>
+            @empty
+                <p class="field-hint">{{ __('No suggestions yet.') }}</p>
+            @endforelse
+
+            @if ($this->phase === PollPhase::Suggestions)
+                <button type="button" wire:click="closeSuggestions" wire:confirm="{{ __('Close the suggestions and start voting now?') }}" class="btn-secondary">{{ __('Close suggestions and start voting') }}</button>
+            @endif
+        </section>
+    @endif
 
     <form wire:submit="save" class="space-y-4" novalidate>
         <h2 class="font-medium">{{ __('Edit poll') }}</h2>

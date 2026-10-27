@@ -6,6 +6,7 @@ use App\Enums\Category;
 use App\Enums\PollPhase;
 use App\Enums\VotingMethod;
 use App\Models\Poll;
+use App\Models\PollOption;
 use App\Models\Vote;
 use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
@@ -146,4 +147,34 @@ test('shows the number of participants', function () {
     (new CastVote)->handle($poll, 'one', [$poll->options()->first()->id]);
 
     Livewire::test('pages::manage-poll', ['token' => $token])->assertSee('1 participant');
+});
+
+test('the creator can remove a suggestion during the suggestion round', function () {
+    $poll = Poll::factory()->collectingSuggestions()->create();
+    $token = 'admin-token';
+    $poll->forceFill(['admin_token_hash' => Poll::hashToken($token)])->save();
+    $option = PollOption::factory()->for($poll)->create();
+
+    Livewire::test('pages::manage-poll', ['token' => $token])->call('removeOption', $option->id);
+
+    expect($poll->options()->count())->toBe(0);
+});
+
+test('options cannot be removed once voting has started', function () {
+    ['poll' => $poll, 'admin_token' => $token] = createdPoll();
+    $option = $poll->options()->first();
+
+    Livewire::test('pages::manage-poll', ['token' => $token])->call('removeOption', $option->id);
+
+    expect($poll->options()->count())->toBe(2);
+});
+
+test('the creator can close the suggestions and start voting', function () {
+    $poll = Poll::factory()->collectingSuggestions()->create();
+    $token = 'admin-token';
+    $poll->forceFill(['admin_token_hash' => Poll::hashToken($token)])->save();
+
+    Livewire::test('pages::manage-poll', ['token' => $token])->call('closeSuggestions');
+
+    expect($poll->refresh()->phase())->toBe(PollPhase::Voting);
 });

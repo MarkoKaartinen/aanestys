@@ -23,6 +23,8 @@ Source: MVP plan. Check items off as they ship.
 
 ## Poll core (MVP)
 
+- [x] Community suggestions round (own start and end, per person limit, duplicate guard, moderation, close early)
+
 - [x] Data model: polls, options, votes, vote choices
 - [x] Phase derived from timestamps, manual close via `closed_at`
 - [x] Create a poll without an account (title, description, category, voting method, end time, timezone)
@@ -45,7 +47,6 @@ Source: MVP plan. Check items off as they ship.
 
 ## After the MVP core
 
-- [ ] Community suggestions round (own start and end, duplicate guard, moderation)
 - [ ] Games category (IGDB, cached metadata)
 - [ ] Books category (Open Library)
 - [ ] OBS-friendly live view and secret live link

@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\CastVote;
+use App\Actions\SuggestOption;
 use App\Enums\PollPhase;
 use App\Enums\VotingMethod;
 use App\Models\Poll;
@@ -29,6 +30,12 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
     public bool $hasVoted = false;
 
     public bool $justSaved = false;
+
+    public string $suggestionLabel = '';
+
+    public string $suggestionDate = '';
+
+    public string $suggestionTime = '';
 
     public function mount(string $slug): void
     {
@@ -103,6 +110,74 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
         };
     }
 
+    /**
+     * The voter's token from their cookie, or a new one that is queued as a cookie.
+     */
+    private function issueVoterToken(): string
+    {
+        $token = request()->cookie('voter');
+        $token = is_string($token) && $token !== '' ? $token : Str::random(40);
+
+        Cookie::queue('voter', $token, 60 * 24 * 365);
+
+        return $token;
+    }
+
+    /**
+     * IDs of the options this voter suggested themselves.
+     *
+     * @return list<int>
+     */
+    #[Computed]
+    public function ownSuggestionIds(): array
+    {
+        $token = request()->cookie('voter');
+
+        if (! is_string($token) || $token === '') {
+            return [];
+        }
+
+        return array_values($this->poll->options()
+            ->where('suggested_by_hash', $this->poll->voterHash($token))
+            ->pluck('id')
+            ->map(fn ($id): int => (int) $id)
+            ->all());
+    }
+
+    public function suggest(SuggestOption $suggestOption): void
+    {
+        $this->resetErrorBag();
+
+        if (Throttle::exceeded('suggest', 20, 60)) {
+            $this->addError('suggestion', __('Too many attempts. Try again in a minute.'));
+
+            return;
+        }
+
+        $suggestOption->handle($this->poll, $this->issueVoterToken(), [
+            'label' => $this->suggestionLabel,
+            'date' => $this->suggestionDate ?: null,
+            'time' => $this->suggestionTime ?: null,
+        ], $this->viewerTimezone);
+
+        $this->reset('suggestionLabel', 'suggestionDate', 'suggestionTime');
+        $this->poll->unsetRelation('options');
+        unset($this->ownSuggestionIds);
+    }
+
+    public function removeSuggestion(int $id): void
+    {
+        if (! $this->poll->canEditOptions()) {
+            return;
+        }
+
+        if (in_array($id, $this->ownSuggestionIds, true)) {
+            $this->poll->options()->whereKey($id)->delete();
+            $this->poll->unsetRelation('options');
+            unset($this->ownSuggestionIds);
+        }
+    }
+
     public function vote(CastVote $castVote): void
     {
         $this->resetErrorBag();
@@ -113,8 +188,7 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
             return;
         }
 
-        $token = request()->cookie('voter');
-        $token = is_string($token) && $token !== '' ? $token : Str::random(40);
+        $token = $this->issueVoterToken();
 
         $optionIds = match ($this->poll->voting_method) {
             VotingMethod::Single => $this->choice ? [$this->choice] : [],
@@ -123,8 +197,6 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
         };
 
         $castVote->handle($this->poll, $token, $optionIds);
-
-        Cookie::queue('voter', $token, 60 * 24 * 365);
 
         $this->hasVoted = true;
         $this->justSaved = true;
@@ -181,6 +253,7 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
 
 <div
     class="space-y-6"
+    @if (in_array($this->phase, [PollPhase::Suggestions, PollPhase::Scheduled], true)) wire:poll.15s.visible @endif
     @if ($poll->includes_time)
         x-data
         x-init="
@@ -207,7 +280,9 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
         </div>
     @endif
 
-    @if ($this->phase === PollPhase::Voting)
+    @if ($this->phase === PollPhase::Voting && $poll->options->count() < 2)
+        <p class="rounded-xl bg-accent-soft px-4 py-3 text-accent-strong">{{ __('This poll does not have enough options to vote on.') }}</p>
+    @elseif ($this->phase === PollPhase::Voting)
         <form wire:submit="vote" class="space-y-6" novalidate>
             @if ($hasVoted && ! $justSaved)
                 <p class="rounded-xl bg-accent-soft px-4 py-3 text-sm text-accent-strong">
@@ -297,7 +372,49 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
             {{ __('Voting opens :date.', ['date' => $poll->voting_starts_at->setTimezone($viewerTimezone)->isoFormat('LLLL')]) }}
         </p>
     @elseif ($this->phase === PollPhase::Suggestions)
-        <p class="rounded-xl bg-accent-soft px-4 py-3 text-accent-strong">{{ __('Suggestions are being collected. Voting has not started yet.') }}</p>
+        <section class="space-y-4">
+            <p class="rounded-xl bg-accent-soft px-4 py-3 text-accent-strong">
+                {{ __('Suggestions are being collected. Voting starts :date.', ['date' => $poll->voting_starts_at->setTimezone($viewerTimezone)->isoFormat('LLLL')]) }}
+            </p>
+
+            @php($left = max(0, $poll->max_suggestions - count($this->ownSuggestionIds)))
+
+            @if ($left > 0)
+                <form wire:submit="suggest" class="space-y-3" novalidate>
+                    <h2 class="field-label">{{ __('Suggest an option') }} ({{ trans_choice(':count suggestion left|:count suggestions left', $left) }})</h2>
+                    <div class="flex flex-wrap gap-2">
+                        @if ($poll->category === \App\Enums\Category::Dates)
+                            <input type="date" wire:model="suggestionDate" class="field-input w-auto" aria-label="{{ __('Date') }}">
+                            @if ($poll->includes_time)
+                                <input type="time" wire:model="suggestionTime" class="field-input w-auto" aria-label="{{ __('Time') }}">
+                            @endif
+                        @else
+                            <input type="text" wire:model="suggestionLabel" class="field-input flex-1" maxlength="200" aria-label="{{ __('Option') }}">
+                        @endif
+                        <button type="submit" class="btn-primary" wire:loading.attr="disabled">{{ __('Suggest') }}</button>
+                    </div>
+                    @error('suggestion') <p class="field-error" role="alert">{{ $message }}</p> @enderror
+                </form>
+            @else
+                <p class="field-hint">{{ __('You have used all your suggestions.') }}</p>
+            @endif
+
+            @if ($poll->options->isNotEmpty())
+                <ul class="space-y-2">
+                    @foreach ($poll->options as $option)
+                        <li wire:key="suggestion-{{ $option->id }}" class="flex items-center gap-2 rounded-xl border border-line bg-surface px-4 py-3">
+                            <span class="flex-1">{{ $option->displayLabel($viewerTimezone) }}</span>
+                            @if (in_array($option->id, $this->ownSuggestionIds, true))
+                                <span class="text-sm text-muted">{{ __('yours') }}</span>
+                                <button type="button" wire:click="removeSuggestion({{ $option->id }})" class="btn-secondary px-3 py-0.5" aria-label="{{ __('Remove your suggestion') }}">&times;</button>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="field-hint">{{ __('No suggestions yet.') }}</p>
+            @endif
+        </section>
     @else
         <p class="rounded-xl bg-accent-soft px-4 py-3 text-accent-strong">{{ __('Voting has ended.') }}</p>
         <a href="{{ route('poll.results', $poll->slug) }}" class="btn-primary">{{ __('See the results') }}</a>

@@ -140,3 +140,54 @@ test('the voting form is shown in Finnish under the fi prefix', function () {
 
     $this->get("/fi/p/{$poll->slug}")->assertOk()->assertSee('Äänestä');
 });
+
+test('a participant can suggest an option and remove it again', function () {
+    $poll = Poll::factory()->collectingSuggestions()->create();
+
+    $page = Livewire::withCookies(['voter' => 'tok'])->test('pages::show-poll', ['slug' => $poll->slug])
+        ->set('suggestionLabel', 'Dune')
+        ->call('suggest')
+        ->assertHasNoErrors()
+        ->assertSee('Dune')
+        ->assertSee('yours');
+
+    expect($poll->options()->count())->toBe(1);
+
+    $page->call('removeSuggestion', $poll->options()->first()->id);
+
+    expect($poll->options()->count())->toBe(0);
+});
+
+test('a participant cannot remove a suggestion made by someone else', function () {
+    $poll = Poll::factory()->collectingSuggestions()->create();
+    $option = PollOption::factory()->for($poll)->create(['suggested_by_hash' => $poll->voterHash('someone-else')]);
+
+    Livewire::withCookies(['voter' => 'tok'])->test('pages::show-poll', ['slug' => $poll->slug])
+        ->call('removeSuggestion', $option->id);
+
+    expect($poll->options()->count())->toBe(1);
+});
+
+test('shows an error when the suggestion limit is reached or the option is a duplicate', function () {
+    $poll = Poll::factory()->collectingSuggestions()->create(['max_suggestions' => 2]);
+
+    Livewire::withCookies(['voter' => 'tok'])->test('pages::show-poll', ['slug' => $poll->slug])
+        ->set('suggestionLabel', 'Dune')->call('suggest')
+        ->set('suggestionLabel', 'dune')->call('suggest')
+        ->assertHasErrors(['suggestion']);
+
+    expect($poll->options()->count())->toBe(1);
+});
+
+test('refreshes automatically while suggestions are being collected', function () {
+    $poll = Poll::factory()->collectingSuggestions()->create();
+
+    $this->get("/p/{$poll->slug}")->assertOk()->assertSee('wire:poll.15s.visible', false);
+});
+
+test('says there are too few options when voting starts without them', function () {
+    $poll = Poll::factory()->create();
+    PollOption::factory()->for($poll)->create();
+
+    $this->get("/p/{$poll->slug}")->assertOk()->assertSee('not have enough options');
+});

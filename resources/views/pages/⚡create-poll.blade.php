@@ -30,6 +30,12 @@ new class extends Component
 
     public string $endsAt = '';
 
+    public bool $collectSuggestions = false;
+
+    public string $suggestionsEndAt = '';
+
+    public int $maxSuggestions = 1;
+
     /** @var list<array{id: string, label: string, date: string, time: string}> */
     public array $options = [];
 
@@ -55,7 +61,7 @@ new class extends Component
 
     public function removeOption(int $index): void
     {
-        if (count($this->options) > 2) {
+        if (count($this->options) > ($this->collectSuggestions ? 0 : 2)) {
             unset($this->options[$index]);
             $this->options = array_values($this->options);
         }
@@ -73,12 +79,15 @@ new class extends Component
             'description' => ['nullable', 'string', 'max:2000'],
             'category' => ['required', Rule::enum(Category::class)],
             'votingMethod' => ['required', Rule::enum(VotingMethod::class)],
-            'maxChoices' => ['nullable', 'integer', 'min:1', 'max:'.count($this->options)],
-            'rankingLimit' => ['nullable', 'integer', 'min:1', 'max:'.count($this->options)],
+            'maxChoices' => ['nullable', 'integer', 'min:1', ...($this->collectSuggestions ? [] : ['max:'.count($this->options)])],
+            'rankingLimit' => ['nullable', 'integer', 'min:1', ...($this->collectSuggestions ? [] : ['max:'.count($this->options)])],
+            'collectSuggestions' => ['boolean'],
+            'suggestionsEndAt' => [$this->collectSuggestions ? 'required' : 'nullable', 'date'],
+            'maxSuggestions' => ['integer', 'min:1', 'max:20'],
             'includesTime' => ['boolean'],
             'timezone' => ['required', 'timezone:all'],
             'endsAt' => ['required', 'date'],
-            'options' => ['required', 'array', 'min:2', 'max:'.self::MAX_OPTIONS],
+            'options' => ['array', 'min:'.($this->collectSuggestions ? 0 : 2), 'max:'.self::MAX_OPTIONS],
             'options.*.label' => $isDates ? ['nullable'] : ['required', 'string', 'max:200', 'distinct:ignore_case'],
             'options.*.date' => $isDates
                 ? ['required', 'date', ...($this->includesTime ? [] : ['distinct'])]
@@ -99,6 +108,8 @@ new class extends Component
             'rankingLimit' => __('number of places'),
             'timezone' => __('timezone'),
             'endsAt' => __('end time'),
+            'suggestionsEndAt' => __('suggestions end time'),
+            'maxSuggestions' => __('suggestions per person'),
             'options' => __('options'),
             'options.*.label' => __('option'),
             'options.*.date' => __('date'),
@@ -108,12 +119,26 @@ new class extends Component
 
     public function save(CreatePoll $createPoll): void
     {
+        if ($this->collectSuggestions) {
+            $this->options = array_values(array_filter(
+                $this->options,
+                fn (array $option): bool => trim($option['label']) !== '' || $option['date'] !== '',
+            ));
+        }
+
         $this->validate();
 
         $endsAt = Carbon::parse($this->endsAt, $this->timezone)->utc();
+        $suggestionsEnd = $this->collectSuggestions ? Carbon::parse($this->suggestionsEndAt, $this->timezone)->utc() : null;
 
         if ($endsAt->lte(now())) {
             $this->addError('endsAt', __('The end time must be in the future.'));
+
+            return;
+        }
+
+        if ($suggestionsEnd && ($suggestionsEnd->lte(now()) || $suggestionsEnd->gte($endsAt))) {
+            $this->addError('suggestionsEndAt', __('Suggestions must end in the future and before voting ends.'));
 
             return;
         }
@@ -128,6 +153,8 @@ new class extends Component
             'timezone' => $this->timezone,
             'includes_time' => $this->includesTime,
             'voting_ends_at' => $endsAt,
+            'suggestions_ends_at' => $suggestionsEnd,
+            'max_suggestions' => $this->maxSuggestions,
             'options' => array_map(fn (array $option): array => [
                 'label' => trim($option['label']) ?: null,
                 'date' => $option['date'] ?: null,
@@ -212,8 +239,29 @@ new class extends Component
             </label>
         @endif
 
+        <label class="flex items-center gap-2">
+            <input type="checkbox" wire:model.live="collectSuggestions" class="size-4 accent-[var(--accent)]">
+            <span>{{ __('Let participants suggest options first') }}</span>
+        </label>
+
+        @if ($collectSuggestions)
+            <div class="grid gap-6 sm:grid-cols-2">
+                <div>
+                    <label for="suggestionsEndAt" class="field-label">{{ __('Suggestions end (voting starts)') }}</label>
+                    <input id="suggestionsEndAt" type="datetime-local" wire:model="suggestionsEndAt" class="field-input">
+                    @error('suggestionsEndAt') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div>
+                    <label for="maxSuggestions" class="field-label">{{ __('Suggestions per person') }}</label>
+                    <input id="maxSuggestions" type="number" min="1" max="20" wire:model="maxSuggestions" class="field-input sm:w-32">
+                    @error('maxSuggestions') <p class="field-error">{{ $message }}</p> @enderror
+                </div>
+            </div>
+        @endif
+
         <fieldset class="space-y-3">
-            <legend class="field-label">{{ __('Options') }}</legend>
+            <legend class="field-label">{{ $collectSuggestions ? __('Starting options (optional)') : __('Options') }}</legend>
 
             @foreach ($options as $index => $option)
                 <div wire:key="option-{{ $option['id'] }}" class="flex items-start gap-2">
@@ -237,7 +285,7 @@ new class extends Component
                         @endif
                     </div>
 
-                    @if (count($options) > 2)
+                    @if (count($options) > ($collectSuggestions ? 0 : 2))
                         <button type="button" wire:click="removeOption({{ $index }})" class="btn-secondary px-3" aria-label="{{ __('Remove option') }} {{ $index + 1 }}">&times;</button>
                     @endif
                 </div>
