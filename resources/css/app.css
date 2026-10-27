@@ -296,6 +296,10 @@
 }
 
 /* Form controls and buttons shared by the pages. */
+@utility btn {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border px-5 py-2 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+}
+
 @layer components {
     .field-label {
         @apply mb-1 block text-sm font-medium;
@@ -311,10 +315,6 @@
 
     .field-hint {
         @apply mt-1 text-sm text-muted;
-    }
-
-    .btn {
-        @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border px-5 py-2 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60;
     }
 
     .btn-primary {
