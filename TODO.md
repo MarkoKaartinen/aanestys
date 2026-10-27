@@ -32,7 +32,7 @@ Source: MVP plan. Check items off as they ship.
 - [ ] Rate limits for voting (done) and poll creation
 - [x] Datetime options with timezone on creation (creator zone → UTC)
 - [x] Results page with winner, ties and totals
-- [ ] Admin: edit, close, delete, copy links
+- [x] Admin: edit, close, delete, copy links
 - [ ] Scheduled cleanup 90 days after a poll closes (pruning is done: `model:prune`; still to show the date in the form and admin view)
 - [ ] `noindex` on all poll pages
 - [x] Scoring logic (`App\Scoring\Tally`) with unit tests

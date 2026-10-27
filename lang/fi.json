@@ -86,5 +86,18 @@
     "Points: the first place of each ballot gets :places points, the second one fewer, and so on down to one point. Options that are not ranked get none.": "Pisteet: jokaisen äänen ensimmäinen sija saa :places pistettä, toinen yhden vähemmän ja niin edelleen yhteen pisteeseen asti. Järjestämättä jätetyt vaihtoehdot eivät saa pisteitä.",
     "The results update automatically while voting is open.": "Tulokset päivittyvät automaattisesti äänestyksen ollessa auki.",
     "Back to the poll": "Takaisin äänestykseen",
-    "See the results": "Katso tulokset"
+    "See the results": "Katso tulokset",
+    "Poll admin": "Äänestyksen hallinta",
+    "Voting has not started yet.": "Äänestys ei ole vielä alkanut.",
+    "Suggestions are being collected.": "Ehdotuksia kerätään.",
+    "Voting is open.": "Äänestys on auki.",
+    "Results link": "Tuloslinkki",
+    "Edit poll": "Muokkaa äänestystä",
+    "Save changes": "Tallenna muutokset",
+    "Saved.": "Tallennettu.",
+    "Danger zone": "Vaaravyöhyke",
+    "Close voting now": "Sulje äänestys nyt",
+    "Close the poll now? Nobody can vote after this.": "Suljetaanko äänestys nyt? Sen jälkeen kukaan ei voi äänestää.",
+    "Delete poll": "Poista äänestys",
+    "Delete the poll and all its votes? This cannot be undone.": "Poistetaanko äänestys ja kaikki sen äänet? Tätä ei voi perua."
 }
