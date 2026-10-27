@@ -6,14 +6,9 @@
             try {
                 value === 'system' ? localStorage.removeItem('theme') : localStorage.setItem('theme', value)
             } catch (e) {}
-            this.apply()
-        },
-        apply() {
-            const dark = this.theme === 'dark' || (this.theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)
-            document.documentElement.classList.toggle('dark', dark)
+            window.applyTheme()
         },
     }"
-    x-init="matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => apply())"
     role="radiogroup"
     aria-label="{{ __('Theme') }}"
     class="inline-flex rounded-full border border-line bg-canvas p-0.5 text-sm"
