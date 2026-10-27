@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
+ * @property Category $category
+ * @property VotingMethod $voting_method
+ * @property bool $includes_time
  * @property Carbon|null $suggestions_starts_at
  * @property Carbon|null $suggestions_ends_at
  * @property Carbon $voting_starts_at

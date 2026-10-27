@@ -18,7 +18,7 @@ function pollData(array $overrides = []): array
         'voting_method' => VotingMethod::Single,
         'timezone' => 'Europe/Helsinki',
         'voting_ends_at' => now()->addWeek(),
-        'options' => [['label' => 'Dune'], ['label' => 'Piranesi']],
+        'options' => [['label' => 'Dune', 'date' => null, 'time' => null], ['label' => 'Piranesi', 'date' => null, 'time' => null]],
         ...$overrides,
     ];
 }
@@ -64,7 +64,7 @@ test('keeps the ranking limit only for ranking polls', function () {
 test('stores date only options as dates without a timezone conversion', function () {
     ['poll' => $poll] = (new CreatePoll)->handle(pollData([
         'category' => Category::Dates,
-        'options' => [['date' => '2026-12-05'], ['date' => '2026-12-06']],
+        'options' => [['label' => null, 'date' => '2026-12-05', 'time' => null], ['label' => null, 'date' => '2026-12-06', 'time' => null]],
     ]));
 
     expect($poll->includes_time)->toBeFalse()
@@ -77,8 +77,8 @@ test('converts dates with a time from the poll timezone to UTC including dayligh
         'category' => Category::Dates,
         'includes_time' => true,
         'options' => [
-            ['date' => '2026-12-05', 'time' => '18:00'],
-            ['date' => '2026-07-01', 'time' => '18:00'],
+            ['label' => null, 'date' => '2026-12-05', 'time' => '18:00'],
+            ['label' => null, 'date' => '2026-07-01', 'time' => '18:00'],
         ],
     ]));
 

@@ -28,7 +28,7 @@ class CreatePoll
      *     timezone: string,
      *     includes_time?: bool,
      *     voting_ends_at: CarbonInterface,
-     *     options: list<array{label?: string|null, date?: string|null, time?: string|null}>,
+     *     options: list<array{label: string|null, date: string|null, time: string|null}>,
      * }  $data
      * @return array{poll: Poll, admin_token: string}
      */
@@ -52,7 +52,7 @@ class CreatePoll
                 'voting_ends_at' => $data['voting_ends_at'],
             ]);
 
-            foreach (array_values($data['options']) as $position => $option) {
+            foreach ($data['options'] as $position => $option) {
                 $poll->options()->create([
                     'position' => $position,
                     ...$this->optionAttributes($poll, $option),
@@ -66,13 +66,13 @@ class CreatePoll
     }
 
     /**
-     * @param  array{label?: string|null, date?: string|null, time?: string|null}  $option
+     * @param  array{label: string|null, date: string|null, time: string|null}  $option
      * @return array{label: string|null, date: string|null, starts_at: CarbonInterface|null}
      */
     private function optionAttributes(Poll $poll, array $option): array
     {
         if ($poll->category === Category::Custom) {
-            return ['label' => $option['label'] ?? null, 'date' => null, 'starts_at' => null];
+            return ['label' => $option['label'], 'date' => null, 'starts_at' => null];
         }
 
         if ($poll->includes_time) {
