@@ -17,7 +17,6 @@ Source: MVP plan. Check items off as they ship.
 - [ ] FAQ
 - [ ] Privacy policy (Hetzner Finland, SES EU, Plausible, 90 day retention)
 - [x] Cookie consent banner installed (whitecube, `dev-main`, Finnish translation)
-- [ ] Restyle the banner with the theme tokens (it still uses the package's purple, light-only CSS)
 - [ ] Cookies page (the banner policy link in `config/cookieconsent.php`)
 - [ ] Switch whitecube from `dev-main` to a tagged release once one supports Laravel 13
 - [ ] Test `wire:navigate` with localized routes once there are Livewire pages

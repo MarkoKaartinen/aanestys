@@ -67,3 +67,230 @@
         @apply outline-2 outline-offset-2 outline-accent;
     }
 }
+
+/*
+ * Cookie consent banner. The markup comes from whitecube/laravel-cookie-consent
+ * (resources/views/vendor/cookie-consent); the package's own stylesheet is not
+ * loaded so the banner follows the theme tokens above.
+ */
+@layer components {
+    .cookie-reset button {
+        @apply cursor-pointer underline hover:text-ink;
+    }
+
+    #cookies-policy.cookies {
+        @apply fixed right-0 bottom-0 z-50 max-h-full max-w-full overflow-auto text-base transition duration-200 ease-out;
+    }
+
+    #cookies-policy.cookies--closing {
+        @apply translate-y-2.5 opacity-0;
+    }
+
+    #cookies-policy .cookies__alert {
+        @apply m-4 max-h-[90%] w-[22em] max-w-[90%] rounded-2xl border border-line bg-surface text-ink shadow-lg;
+    }
+
+    #cookies-policy .cookies__expandable {
+        display: block;
+        height: 0;
+        opacity: 0;
+        overflow: hidden;
+        visibility: hidden;
+        transition:
+            height 0.3s ease-out,
+            opacity 0.3s ease-out,
+            visibility 0s linear 0.3s;
+    }
+
+    #cookies-policy .cookies__expandable--open {
+        height: auto;
+        opacity: 1;
+        visibility: visible;
+        transition:
+            height 0.3s ease-out,
+            opacity 0.3s ease-out;
+    }
+
+    #cookies-policy .cookies__container {
+        display: block;
+        height: auto;
+        opacity: 1;
+        overflow: hidden;
+        visibility: visible;
+        transition:
+            height 0.3s ease-out,
+            opacity 0.3s ease-out,
+            visibility 0s linear 0.1s;
+    }
+
+    #cookies-policy .cookies__container--hide {
+        height: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+            height 0.3s ease-out,
+            opacity 0.3s ease-out,
+            visibility 0s linear 0.3s;
+    }
+
+    /* Without JavaScript every section is shown, since nothing can expand it. */
+    #cookies-policy.cookies--no-js .cookies__expandable:target,
+    #cookies-policy.cookies--no-js .cookies__section .cookies__expandable {
+        height: auto;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    #cookies-policy.cookies--no-js .cookies__details,
+    #cookies-policy.cookies--no-js svg {
+        display: none;
+    }
+
+    #cookies-policy .cookies__wrapper {
+        @apply px-6 py-4;
+    }
+
+    #cookies-policy .cookies__title {
+        @apply mb-2 font-semibold;
+    }
+
+    #cookies-policy .cookies__intro {
+        @apply space-y-2 text-sm text-muted;
+    }
+
+    #cookies-policy .cookies__intro a {
+        @apply text-accent-strong underline;
+    }
+
+    #cookies-policy .cookies__actions {
+        @apply mt-4 flex flex-col gap-1;
+    }
+
+    #cookies-policy .cookiesBtn {
+        @apply w-full;
+    }
+
+    #cookies-policy .cookiesBtn__link {
+        @apply block w-full cursor-pointer truncate rounded-full border border-accent bg-accent px-4 py-2.5 text-center text-sm font-semibold text-on-accent transition-colors hover:bg-accent-strong;
+    }
+
+    #cookies-policy .cookiesBtn--essentials .cookiesBtn__link {
+        @apply bg-transparent text-accent-strong hover:bg-accent-soft;
+    }
+
+    #cookies-policy .cookies__btn--customize {
+        @apply relative flex items-center justify-between border-t border-line px-6 py-4 text-sm font-semibold text-ink;
+    }
+
+    #cookies-policy .cookies__btn svg {
+        @apply transition-transform duration-200;
+    }
+
+    #cookies-policy.cookies--show .cookies__btn--customize {
+        @apply border-t-0 border-b border-line;
+    }
+
+    #cookies-policy.cookies--show .cookies__btn svg {
+        @apply rotate-180;
+    }
+
+    #cookies-policy .cookies__sections {
+        @apply max-h-[450px] overflow-y-scroll;
+    }
+
+    #cookies-policy .cookies__section {
+        @apply px-6;
+    }
+
+    #cookies-policy .cookies__section + .cookies__section {
+        @apply border-t border-line;
+    }
+
+    #cookies-policy .cookies__category,
+    #cookies-policy .cookies__box {
+        @apply relative block overflow-hidden;
+    }
+
+    #cookies-policy .cookies__category input {
+        @apply absolute top-0 right-[105%] m-0 block p-0;
+    }
+
+    #cookies-policy .cookies__box {
+        @apply cursor-pointer py-4 pr-12 leading-snug;
+    }
+
+    /* The category switch: a track (:after) and a knob (:before). */
+    #cookies-policy .cookies__box::before,
+    #cookies-policy .cookies__box::after {
+        @apply absolute top-1/2 block rounded-full;
+        content: '';
+    }
+
+    #cookies-policy .cookies__box::after {
+        @apply -mt-[0.7em] h-[1.4em] w-[2.5em] bg-line transition-colors duration-200;
+        right: 0;
+        z-index: 0;
+    }
+
+    #cookies-policy .cookies__box::before {
+        @apply -mt-[0.5em] h-[1em] w-[1em] -translate-x-[0.55em] bg-surface transition-transform duration-200;
+        right: 0.75em;
+        z-index: 1;
+    }
+
+    #cookies-policy .cookies__category input:checked + .cookies__box::after {
+        @apply bg-accent;
+    }
+
+    #cookies-policy .cookies__category input:disabled + .cookies__box::after {
+        @apply opacity-60;
+    }
+
+    #cookies-policy .cookies__category input:checked + .cookies__box::before {
+        @apply translate-x-[0.55em];
+    }
+
+    #cookies-policy .cookies__category input:focus-visible + .cookies__box::after {
+        @apply outline-2 outline-offset-2 outline-accent;
+    }
+
+    #cookies-policy .cookies__label {
+        @apply text-sm font-semibold;
+    }
+
+    #cookies-policy .cookies__info {
+        @apply text-sm text-muted;
+    }
+
+    #cookies-policy .cookies__details {
+        @apply mt-2.5 mb-3.5 block text-sm text-accent-strong underline;
+    }
+
+    #cookies-policy .cookies__definitions {
+        @apply space-y-3 pt-3 text-sm text-muted;
+    }
+
+    #cookies-policy .cookies__name {
+        @apply inline font-semibold text-ink;
+    }
+
+    #cookies-policy .cookies__duration {
+        @apply inline;
+    }
+
+    #cookies-policy .cookies__duration::before {
+        content: ' · ';
+    }
+
+    #cookies-policy .cookies__description {
+        @apply block pt-1;
+    }
+
+    #cookies-policy .cookies__save {
+        @apply mt-1.5 flex justify-end border-t border-line px-6 py-3;
+    }
+
+    #cookies-policy .cookies__save .cookiesBtn__link {
+        @apply w-auto;
+    }
+}

@@ -41,7 +41,7 @@
             <div class="mx-auto max-w-3xl px-4 py-6">
                 <div class="flex flex-wrap items-center justify-between gap-2">
                     <span>{{ config('app.name') }}</span>
-                    @cookieconsentbutton(action: 'reset', label: __('cookieConsent::cookies.manage'), attributes: ['class' => 'underline hover:text-ink'])
+                    @cookieconsentbutton(action: 'reset', label: __('cookieConsent::cookies.manage'), attributes: ['class' => 'cookie-reset'])
                 </div>
             </div>
         </footer>
