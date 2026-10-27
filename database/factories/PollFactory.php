@@ -27,6 +27,7 @@ class PollFactory extends Factory
             'description' => fake()->optional()->paragraph(),
             'category' => Category::Custom,
             'voting_method' => VotingMethod::Single,
+            'timezone' => 'Europe/Helsinki',
             'voting_starts_at' => now()->subHour(),
             'voting_ends_at' => now()->addWeek(),
         ];

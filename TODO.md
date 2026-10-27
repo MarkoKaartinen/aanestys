@@ -27,10 +27,10 @@ Source: MVP plan. Check items off as they ship.
 - [x] Phase derived from timestamps, manual close via `closed_at`
 - [x] Create a poll without an account (title, description, category, voting method, end time, timezone)
 - [x] Share link and secret admin link (admin token stored hashed)
-- [ ] Voting: single choice, multiple choice, ranking (Borda, full or Top N chosen by the creator)
-- [ ] Voter token cookie, votes can be changed while the poll is open
-- [ ] Rate limits for voting and poll creation
-- [x] Datetime options with timezone on creation (creator zone → UTC); [ ] show times in the voter's own zone with a zone picker
+- [x] Voting: single choice, multiple choice, ranking (Borda, full or Top N chosen by the creator)
+- [x] Voter token cookie, votes can be changed while the poll is open
+- [ ] Rate limits for voting (done) and poll creation
+- [x] Datetime options with timezone on creation (creator zone → UTC)
 - [ ] Results page with winner, ties and totals
 - [ ] Admin: edit, close, delete, copy links
 - [ ] Scheduled cleanup 90 days after a poll closes (pruning is done: `model:prune`; still to show the date in the form and admin view)

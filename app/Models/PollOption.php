@@ -6,7 +6,12 @@ use Database\Factories\PollOptionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property Carbon|null $date
+ * @property Carbon|null $starts_at
+ */
 class PollOption extends Model
 {
     /** @use HasFactory<PollOptionFactory> */

@@ -40,6 +40,7 @@ return [
         'consent' => 'Tallentaa evästevalintasi.',
         'session' => 'Tunnistaa selaussessiosi.',
         'locale' => 'Muistaa valitsemasi kielen.',
+        'voter' => 'Mahdollistaa äänesi muuttamisen ja estää samaa selainta äänestämästä kahdesti.',
         'csrf' => 'Suojaa sinua ja palvelua väärennetyiltä pyynnöiltä (CSRF).',
         '_ga' => 'Google Analyticsin pääeväste, erottaa kävijät toisistaan.',
         '_ga_ID' => 'Google Analytics käyttää tätä istunnon tilan säilyttämiseen.',

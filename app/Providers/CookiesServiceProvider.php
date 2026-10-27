@@ -31,5 +31,10 @@ class CookiesServiceProvider extends ServiceProvider
             ->name('locale')
             ->description(__('cookieConsent::cookies.defaults.locale'))
             ->duration(60 * 24 * 30);
+
+        Cookies::essentials()
+            ->name('voter')
+            ->description(__('cookieConsent::cookies.defaults.voter'))
+            ->duration(60 * 24 * 365);
     }
 }

@@ -40,6 +40,7 @@ return [
         'consent' => 'Used to store the user\'s cookie consent preferences.',
         'session' => 'Used to identify the user\'s browsing session.',
         'locale' => 'Remembers the language you chose.',
+        'voter' => 'Lets you change your vote and stops the same browser from voting twice.',
         'csrf' => 'Used to secure both the user and our website against cross-site request forgery attacks.',
         '_ga' => 'Main cookie used by Google Analytics, enables a service to distinguish one visitor from another.',
         '_ga_ID' => 'Used by Google Analytics to persist session state.',
