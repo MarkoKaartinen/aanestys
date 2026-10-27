@@ -3,6 +3,67 @@
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
-@theme {
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Theme tokens. Light is the default, the `dark` class on <html> switches
+ * every token at once, so components never need `dark:` variants for colors.
+ */
+:root {
+    color-scheme: light;
+    --canvas: oklch(98.5% 0.006 95);
+    --surface: oklch(100% 0 0);
+    --ink: oklch(24% 0.02 200);
+    --muted: oklch(50% 0.02 200);
+    --line: oklch(91% 0.01 150);
+    --accent: oklch(48% 0.1 180);
+    --accent-strong: oklch(40% 0.09 180);
+    --accent-soft: oklch(94% 0.04 180);
+    --on-accent: oklch(99% 0 0);
+    --winner: oklch(78% 0.14 80);
+    --winner-soft: oklch(95% 0.05 85);
+    --danger: oklch(52% 0.2 27);
+}
+
+.dark {
+    color-scheme: dark;
+    --canvas: oklch(18% 0.015 200);
+    --surface: oklch(22% 0.017 200);
+    --ink: oklch(95% 0.008 95);
+    --muted: oklch(72% 0.015 200);
+    --line: oklch(32% 0.02 200);
+    --accent: oklch(74% 0.12 178);
+    --accent-strong: oklch(80% 0.12 178);
+    --accent-soft: oklch(30% 0.05 180);
+    --on-accent: oklch(18% 0.015 200);
+    --winner: oklch(82% 0.14 85);
+    --winner-soft: oklch(32% 0.06 85);
+    --danger: oklch(72% 0.17 25);
+}
+
+@theme inline {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-canvas: var(--canvas);
+    --color-surface: var(--surface);
+    --color-ink: var(--ink);
+    --color-muted: var(--muted);
+    --color-line: var(--line);
+    --color-accent: var(--accent);
+    --color-accent-strong: var(--accent-strong);
+    --color-accent-soft: var(--accent-soft);
+    --color-on-accent: var(--on-accent);
+    --color-winner: var(--winner);
+    --color-winner-soft: var(--winner-soft);
+    --color-danger: var(--danger);
+}
+
+@layer base {
+    body {
+        @apply bg-canvas text-ink antialiased;
+    }
+
+    :focus-visible {
+        @apply outline-2 outline-offset-2 outline-accent;
+    }
 }
