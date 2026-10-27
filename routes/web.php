@@ -6,4 +6,5 @@ Route::localize(function () {
     Route::livewire('/', 'pages::create-poll')->name('home');
     Route::livewire('/manage/{token}', 'pages::manage-poll')->name('poll.manage');
     Route::livewire('/p/{slug}', 'pages::show-poll')->name('poll.show');
+    Route::livewire('/p/{slug}/results', 'pages::poll-results')->name('poll.results');
 });

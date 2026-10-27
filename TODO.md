@@ -31,7 +31,7 @@ Source: MVP plan. Check items off as they ship.
 - [x] Voter token cookie, votes can be changed while the poll is open
 - [ ] Rate limits for voting (done) and poll creation
 - [x] Datetime options with timezone on creation (creator zone → UTC)
-- [ ] Results page with winner, ties and totals
+- [x] Results page with winner, ties and totals
 - [ ] Admin: edit, close, delete, copy links
 - [ ] Scheduled cleanup 90 days after a poll closes (pruning is done: `model:prune`; still to show the date in the form and admin view)
 - [ ] `noindex` on all poll pages
@@ -39,8 +39,8 @@ Source: MVP plan. Check items off as they ship.
 
 ## Live results
 
-- [ ] Live page with `wire:poll.visible`, results cached in Redis (short TTL, `Cache::flexible`)
-- [ ] Throttle on live routes
+- [x] Results refresh with `wire:poll.5s.visible`, cached in Redis (`Cache::flexible`)
+- [ ] Throttle on results routes
 - [ ] Hide live results from participants (creator setting)
 
 ## After the MVP core

@@ -288,6 +288,7 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
             @endif
 
             <p class="field-hint">
+                <a href="{{ route('poll.results', $poll->slug) }}" class="underline">{{ __('See the results') }}</a> ·
                 {{ __('Voting ends :date.', ['date' => $poll->voting_ends_at->setTimezone($viewerTimezone)->isoFormat('LLLL')]) }}
             </p>
         </form>
@@ -299,5 +300,6 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
         <p class="rounded-xl bg-accent-soft px-4 py-3 text-accent-strong">{{ __('Suggestions are being collected. Voting has not started yet.') }}</p>
     @else
         <p class="rounded-xl bg-accent-soft px-4 py-3 text-accent-strong">{{ __('Voting has ended.') }}</p>
+        <a href="{{ route('poll.results', $poll->slug) }}" class="btn-primary">{{ __('See the results') }}</a>
     @endif
 </div>

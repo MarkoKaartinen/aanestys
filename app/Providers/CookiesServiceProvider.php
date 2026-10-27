@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Whitecube\LaravelCookieConsent\Cookie;
 use Whitecube\LaravelCookieConsent\CookiesRegistrar;
 use Whitecube\LaravelCookieConsent\CookiesServiceProvider as ServiceProvider;
 use Whitecube\LaravelCookieConsent\Facades\Cookies;
@@ -27,14 +28,16 @@ class CookiesServiceProvider extends ServiceProvider
     {
         Cookies::essentials()
             ->session()
-            ->csrf()
+            ->csrf();
+
+        Cookies::essentials()->cookie(fn (Cookie $cookie) => $cookie
             ->name('locale')
             ->description(__('cookieConsent::cookies.defaults.locale'))
-            ->duration(60 * 24 * 30);
+            ->duration(60 * 24 * 30));
 
-        Cookies::essentials()
+        Cookies::essentials()->cookie(fn (Cookie $cookie) => $cookie
             ->name('voter')
             ->description(__('cookieConsent::cookies.defaults.voter'))
-            ->duration(60 * 24 * 365);
+            ->duration(60 * 24 * 365));
     }
 }

@@ -75,5 +75,16 @@
     "Voting ends :date.": "Äänestys päättyy :date.",
     "Voting opens :date.": "Äänestys alkaa :date.",
     "Suggestions are being collected. Voting has not started yet.": "Ehdotuksia kerätään. Äänestys ei ole vielä alkanut.",
-    "Voting has ended.": "Äänestys on päättynyt."
+    "Voting has ended.": "Äänestys on päättynyt.",
+    "Final results": "Lopulliset tulokset",
+    "Live results": "Reaaliaikaiset tulokset",
+    ":count participant|:count participants": ":count osallistuja|:count osallistujaa",
+    "Tie": "Tasatulos",
+    "Winner": "Voittaja",
+    ":count vote|:count votes": ":count ääni|:count ääntä",
+    ":count point|:count points": ":count piste|:count pistettä",
+    "Points: the first place of each ballot gets :places points, the second one fewer, and so on down to one point. Options that are not ranked get none.": "Pisteet: jokaisen äänen ensimmäinen sija saa :places pistettä, toinen yhden vähemmän ja niin edelleen yhteen pisteeseen asti. Järjestämättä jätetyt vaihtoehdot eivät saa pisteitä.",
+    "The results update automatically while voting is open.": "Tulokset päivittyvät automaattisesti äänestyksen ollessa auki.",
+    "Back to the poll": "Takaisin äänestykseen",
+    "See the results": "Katso tulokset"
 }
