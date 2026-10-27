@@ -1,7 +1,11 @@
 @props(['title' => null, 'noindex' => false])
 
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html
+    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    data-message-expired="{{ __('This page has expired. Refresh the page to continue?') }}"
+    data-message-too-many="{{ __('You are doing that too often. Wait a moment and try again.') }}"
+>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">

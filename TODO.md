@@ -19,7 +19,8 @@ Source: MVP plan. Check items off as they ship.
 - [x] Cookie consent banner installed (whitecube, `dev-main`, Finnish translation)
 - [x] Cookies page (the banner policy link in `config/cookieconsent.php`)
 - [ ] Switch whitecube from `dev-main` to a tagged release once one supports Laravel 13
-- [ ] Test `wire:navigate` with localized routes once there are Livewire pages
+- [x] Translated route paths (`/fi/tietoa`), language kept by cookie and browser
+- [ ] Test `wire:navigate` with localized routes in a browser
 
 ## Before launch
 

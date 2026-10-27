@@ -133,5 +133,19 @@
     "The creator has hidden the results until voting ends.": "Luoja on piilottanut tulokset äänestyksen päättymiseen asti.",
     "Show the results to participants while voting is open": "Näytä tulokset osallistujille äänestyksen ollessa auki",
     "Live link for streaming": "Live-linkki striimaukseen",
-    "Always shows the live results, even when they are hidden from participants. Add it as a browser source in OBS. Add ?theme=dark or ?theme=light to force a theme.": "Näyttää aina reaaliaikaiset tulokset, vaikka ne olisi piilotettu osallistujilta. Lisää se OBS:ssä selainlähteeksi. Lisää ?theme=dark tai ?theme=light, jos haluat pakottaa teeman."
+    "Always shows the live results, even when they are hidden from participants. Add it as a browser source in OBS. Add ?theme=dark or ?theme=light to force a theme.": "Näyttää aina reaaliaikaiset tulokset, vaikka ne olisi piilotettu osallistujilta. Lisää se OBS:ssä selainlähteeksi. Lisää ?theme=dark tai ?theme=light, jos haluat pakottaa teeman.",
+    "Forbidden": "Pääsy estetty",
+    "You do not have access to this page.": "Sinulla ei ole oikeutta tähän sivuun.",
+    "Page not found": "Sivua ei löytynyt",
+    "The page you are looking for does not exist, or the poll has been deleted.": "Etsimääsi sivua ei ole, tai äänestys on poistettu.",
+    "Page expired": "Sivu on vanhentunut",
+    "Your session has expired. Go back, refresh the page and try again.": "Istuntosi on vanhentunut. Palaa takaisin, päivitä sivu ja yritä uudelleen.",
+    "Too many requests": "Liian monta pyyntöä",
+    "You are doing that too often. Wait a moment and try again.": "Teet tätä liian usein. Odota hetki ja yritä uudelleen.",
+    "Something went wrong": "Jokin meni pieleen",
+    "We could not complete your request. Please try again later.": "Pyyntöäsi ei voitu käsitellä. Yritä myöhemmin uudelleen.",
+    "Back soon": "Palaamme pian",
+    "The service is being updated. Please try again in a few minutes.": "Palvelua päivitetään. Yritä muutaman minuutin kuluttua uudelleen.",
+    "Back to the front page": "Takaisin etusivulle",
+    "This page has expired. Refresh the page to continue?": "Sivu on vanhentunut. Päivitetäänkö sivu, jotta voit jatkaa?"
 }
