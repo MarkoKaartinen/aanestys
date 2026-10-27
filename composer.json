@@ -15,7 +15,9 @@
         "laravel/telescope": "^5.26",
         "laravel/tinker": "^3.0",
         "livewire/blaze": "^1.0",
-        "livewire/livewire": "^4.1"
+        "livewire/livewire": "^4.1",
+        "niels-numbers/laravel-localizer": "^1.4",
+        "whitecube/laravel-cookie-consent": "dev-main"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",

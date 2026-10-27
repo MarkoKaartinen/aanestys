@@ -2,4 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome')->name('home');
+Route::localize(function () {
+    Route::view('/', 'welcome')->name('home');
+});
