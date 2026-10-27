@@ -35,7 +35,7 @@ Source: MVP plan. Check items off as they ship.
 - [ ] Admin: edit, close, delete, copy links
 - [ ] Scheduled cleanup 90 days after a poll closes, shown in the form and admin view
 - [ ] `noindex` on all poll pages
-- [ ] Unit tests for scoring
+- [x] Scoring logic (`App\Scoring\Tally`) with unit tests
 
 ## Live results
 
