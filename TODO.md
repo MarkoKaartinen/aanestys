@@ -23,8 +23,8 @@ Source: MVP plan. Check items off as they ship.
 
 ## Poll core (MVP)
 
-- [ ] Data model: polls, options, votes, vote choices
-- [ ] Phase derived from timestamps, manual close via `closed_at`
+- [x] Data model: polls, options, votes, vote choices
+- [x] Phase derived from timestamps, manual close via `closed_at`
 - [ ] Create a poll without an account (title, description, category, voting method)
 - [ ] Share link and secret admin link (admin token stored hashed)
 - [ ] Voting: single choice, multiple choice, ranking (Borda, full or Top N chosen by the creator)
@@ -33,7 +33,7 @@ Source: MVP plan. Check items off as they ship.
 - [ ] Datetime options with timezone: creator picks a zone, voters see their own zone
 - [ ] Results page with winner, ties and totals
 - [ ] Admin: edit, close, delete, copy links
-- [ ] Scheduled cleanup 90 days after a poll closes, shown in the form and admin view
+- [ ] Scheduled cleanup 90 days after a poll closes (pruning is done: `model:prune`; still to show the date in the form and admin view)
 - [ ] `noindex` on all poll pages
 - [x] Scoring logic (`App\Scoring\Tally`) with unit tests
 
