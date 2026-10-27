@@ -40,6 +40,6 @@ class Vote extends Model
      */
     public function choices(): HasMany
     {
-        return $this->hasMany(VoteChoice::class);
+        return $this->hasMany(VoteChoice::class)->orderBy('id');
     }
 }

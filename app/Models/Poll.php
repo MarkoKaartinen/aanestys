@@ -85,6 +85,25 @@ class Poll extends Model
     }
 
     /**
+     * Hash a voter token for this poll. The hash differs per poll, so the same
+     * browser cannot be linked across polls from the database.
+     */
+    public function voterHash(string $token): string
+    {
+        return hash_hmac('sha256', $token, config('app.key').'|'.$this->id);
+    }
+
+    /**
+     * How many options a voter ranks: the creator's limit, capped by the options.
+     */
+    public function rankingPlaces(): int
+    {
+        $count = $this->options()->count();
+
+        return min($this->ranking_limit ?? $count, $count);
+    }
+
+    /**
      * Find the poll an admin token belongs to.
      */
     public static function findByAdminToken(string $token): ?self

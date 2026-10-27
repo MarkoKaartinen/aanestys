@@ -33,6 +33,24 @@ class PollOption extends Model
     }
 
     /**
+     * The text shown to voters. Times are shown in the given timezone.
+     */
+    public function displayLabel(string $timezone): string
+    {
+        if ($this->starts_at) {
+            $local = $this->starts_at->copy()->setTimezone($timezone);
+
+            return $local->isoFormat('LLLL').' ('.$local->format('T').')';
+        }
+
+        if ($this->date) {
+            return $this->date->isoFormat('dddd, LL');
+        }
+
+        return (string) $this->label;
+    }
+
+    /**
      * @return BelongsTo<Poll, $this>
      */
     public function poll(): BelongsTo
