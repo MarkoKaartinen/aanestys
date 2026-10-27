@@ -294,3 +294,34 @@
         @apply w-auto;
     }
 }
+
+/* Form controls and buttons shared by the pages. */
+@layer components {
+    .field-label {
+        @apply mb-1 block text-sm font-medium;
+    }
+
+    .field-input {
+        @apply w-full rounded-xl border border-line bg-surface px-3 py-2 text-ink placeholder:text-muted;
+    }
+
+    .field-error {
+        @apply mt-1 text-sm text-danger;
+    }
+
+    .field-hint {
+        @apply mt-1 text-sm text-muted;
+    }
+
+    .btn {
+        @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border px-5 py-2 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+    }
+
+    .btn-primary {
+        @apply btn border-accent bg-accent text-on-accent hover:bg-accent-strong;
+    }
+
+    .btn-secondary {
+        @apply btn border-line bg-surface text-ink hover:bg-accent-soft;
+    }
+}

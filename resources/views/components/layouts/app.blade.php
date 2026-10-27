@@ -1,10 +1,15 @@
-@props(['title' => null])
+@props(['title' => null, 'noindex' => false])
 
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        @if ($noindex)
+            <meta name="robots" content="noindex, nofollow">
+            <meta name="referrer" content="no-referrer">
+        @endif
 
         <title>{{ $title ? $title.' - ' : '' }}{{ config('app.name') }}</title>
 
