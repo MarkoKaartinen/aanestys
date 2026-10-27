@@ -12,4 +12,5 @@ Route::localize(function () {
     Route::livewire('/manage/{token}', 'pages::manage-poll')->name('poll.manage');
     Route::livewire('/p/{slug}', 'pages::show-poll')->name('poll.show');
     Route::livewire('/p/{slug}/results', 'pages::poll-results')->name('poll.results');
+    Route::livewire('/live/{token}', 'pages::live-results')->name('poll.live');
 });

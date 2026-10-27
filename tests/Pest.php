@@ -1,5 +1,9 @@
 <?php
 
+use App\Actions\CreatePoll;
+use App\Enums\Category;
+use App\Enums\VotingMethod;
+use App\Models\Poll;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Http;
@@ -53,7 +57,22 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/**
+ * Create a free text poll through the action, like the creation page does.
+ *
+ * @return array{poll: Poll, admin_token: string}
+ */
+function createdPoll(): array
 {
-    // ..
+    return (new CreatePoll)->handle([
+        'title' => 'Next book',
+        'category' => Category::Custom,
+        'voting_method' => VotingMethod::Single,
+        'timezone' => 'Europe/Helsinki',
+        'voting_ends_at' => now()->addWeek(),
+        'options' => [
+            ['label' => 'Dune', 'date' => null, 'time' => null],
+            ['label' => 'Piranesi', 'date' => null, 'time' => null],
+        ],
+    ]);
 }

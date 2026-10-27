@@ -129,5 +129,9 @@
     "FAQ": "UKK",
     "Privacy": "Tietosuoja",
     "Cookies": "Evästeet",
-    "Too many polls created. Try again later.": "Liian monta äänestystä luotu. Yritä myöhemmin uudelleen."
+    "Too many polls created. Try again later.": "Liian monta äänestystä luotu. Yritä myöhemmin uudelleen.",
+    "The creator has hidden the results until voting ends.": "Luoja on piilottanut tulokset äänestyksen päättymiseen asti.",
+    "Show the results to participants while voting is open": "Näytä tulokset osallistujille äänestyksen ollessa auki",
+    "Live link for streaming": "Live-linkki striimaukseen",
+    "Always shows the live results, even when they are hidden from participants. Add it as a browser source in OBS. Add ?theme=dark or ?theme=light to force a theme.": "Näyttää aina reaaliaikaiset tulokset, vaikka ne olisi piilotettu osallistujilta. Lisää se OBS:ssä selainlähteeksi. Lisää ?theme=dark tai ?theme=light, jos haluat pakottaa teeman."
 }

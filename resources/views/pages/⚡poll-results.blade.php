@@ -57,7 +57,6 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
     }
 };
 ?>
-
 <div
     class="space-y-6"
     @if ($this->phase !== PollPhase::Closed) wire:poll.5s.visible @endif
@@ -67,58 +66,45 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
             {{ $this->phase === PollPhase::Closed ? __('Final results') : __('Live results') }}
         </p>
         <h1 class="text-3xl font-semibold tracking-tight">{{ $poll->title }}</h1>
-        <p class="text-muted">{{ trans_choice(':count participant|:count participants', $this->standings['participants']) }}</p>
+        @if ($poll->resultsVisibleToParticipants())
+            <p class="text-muted">{{ trans_choice(':count participant|:count participants', $this->standings['participants']) }}</p>
+        @endif
     </header>
 
-    @if ($this->phase === PollPhase::Closed && $this->leaders !== [])
-        <div class="rounded-2xl border border-winner bg-winner-soft p-4">
-            <p class="text-sm font-medium">{{ count($this->leaders) > 1 ? __('Tie') : __('Winner') }}</p>
-            <p class="text-xl font-semibold">
-                {{ collect($this->leaders)->map(fn ($row) => $poll->options->firstWhere('id', $row['option_id'])->displayLabel($viewerTimezone))->join(' · ') }}
+    @if (! $poll->resultsVisibleToParticipants())
+        <p class="rounded-xl bg-accent-soft px-4 py-3 text-accent-strong">{{ __('The creator has hidden the results until voting ends.') }}</p>
+    @else
+        @if ($this->phase === PollPhase::Closed && $this->leaders !== [])
+            <div class="rounded-2xl border border-winner bg-winner-soft p-4">
+                <p class="text-sm font-medium">{{ count($this->leaders) > 1 ? __('Tie') : __('Winner') }}</p>
+                <p class="text-xl font-semibold">
+                    {{ collect($this->leaders)->map(fn ($row) => $poll->options->firstWhere('id', $row['option_id'])->displayLabel($viewerTimezone))->join(' · ') }}
+                </p>
+            </div>
+        @endif
+
+        @if ($poll->includes_time)
+            <div>
+                <label for="viewerTimezone" class="field-label">{{ __('Show times in') }}</label>
+                <select id="viewerTimezone" wire:model.live="viewerTimezone" class="field-input sm:w-72">
+                    @foreach (DateTimeZone::listIdentifiers() as $identifier)
+                        <option value="{{ $identifier }}">{{ $identifier }}</option>
+                    @endforeach
+                </select>
+            </div>
+        @endif
+
+        <x-results-list :poll="$poll" :standings="$this->standings" :timezone="$viewerTimezone" />
+
+        @if ($poll->voting_method === VotingMethod::Ranking)
+            <p class="field-hint">
+                {{ __('Points: the first place of each ballot gets :places points, the second one fewer, and so on down to one point. Options that are not ranked get none.', ['places' => $poll->rankingPlaces()]) }}
             </p>
-        </div>
-    @endif
+        @endif
 
-    @if ($poll->includes_time)
-        <div>
-            <label for="viewerTimezone" class="field-label">{{ __('Show times in') }}</label>
-            <select id="viewerTimezone" wire:model.live="viewerTimezone" class="field-input sm:w-72">
-                @foreach (DateTimeZone::listIdentifiers() as $identifier)
-                    <option value="{{ $identifier }}">{{ $identifier }}</option>
-                @endforeach
-            </select>
-        </div>
-    @endif
-
-    <ol class="space-y-3">
-        @foreach ($this->standings['results'] as $row)
-            @php($option = $poll->options->firstWhere('id', $row['option_id']))
-            <li wire:key="result-{{ $row['option_id'] }}" class="{{ $row['rank'] === 1 && $row['points'] > 0 ? 'border-winner bg-winner-soft' : 'border-line bg-surface' }} rounded-xl border p-3">
-                <div class="flex items-baseline justify-between gap-4">
-                    <span class="font-medium"><span class="text-muted">{{ $row['rank'] }}.</span> {{ $option->displayLabel($viewerTimezone) }}</span>
-                    <span class="shrink-0 text-sm tabular-nums">
-                        @if ($row['percentage'] !== null)
-                            {{ trans_choice(':count vote|:count votes', $row['points']) }} · {{ $row['percentage'] }}%
-                        @else
-                            {{ trans_choice(':count point|:count points', $row['points']) }}
-                        @endif
-                    </span>
-                </div>
-                <div class="mt-2 h-2 rounded-full bg-line" role="presentation">
-                    <div class="{{ $row['rank'] === 1 && $row['points'] > 0 ? 'bg-winner' : 'bg-accent' }} h-2 rounded-full transition-all" style="width: {{ round($row['bar'] * 100) }}%"></div>
-                </div>
-            </li>
-        @endforeach
-    </ol>
-
-    @if ($poll->voting_method === VotingMethod::Ranking)
-        <p class="field-hint">
-            {{ __('Points: the first place of each ballot gets :places points, the second one fewer, and so on down to one point. Options that are not ranked get none.', ['places' => $poll->rankingPlaces()]) }}
-        </p>
-    @endif
-
-    @if ($this->phase !== PollPhase::Closed)
-        <p class="field-hint">{{ __('The results update automatically while voting is open.') }}</p>
+        @if ($this->phase !== PollPhase::Closed)
+            <p class="field-hint">{{ __('The results update automatically while voting is open.') }}</p>
+        @endif
     @endif
 
     <div class="flex flex-wrap gap-3">

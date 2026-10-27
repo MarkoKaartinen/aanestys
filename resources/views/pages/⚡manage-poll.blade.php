@@ -21,6 +21,8 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
 
     public string $endsAt = '';
 
+    public bool $liveResultsVisible = true;
+
     public bool $saved = false;
 
     public function mount(string $token): void
@@ -28,6 +30,7 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
         $this->poll = Poll::findByAdminToken($token) ?? abort(404);
         $this->token = $token;
 
+        $this->liveResultsVisible = $this->poll->live_results_visible;
         $this->title = $this->poll->title;
         $this->description = (string) $this->poll->description;
         $this->endsAt = $this->poll->voting_ends_at->copy()->setTimezone($this->poll->timezone)->format('Y-m-d\TH:i');
@@ -63,6 +66,7 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
             'title' => ['required', 'string', 'max:200'],
             'description' => ['nullable', 'string', 'max:2000'],
             'endsAt' => ['required', 'date'],
+            'liveResultsVisible' => ['boolean'],
         ], attributes: [
             'title' => __('title'),
             'description' => __('description'),
@@ -79,6 +83,7 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
 
         $poll->title = trim($this->title);
         $poll->description = trim($this->description) ?: null;
+        $poll->live_results_visible = $this->liveResultsVisible;
 
         if ($poll->phase() !== PollPhase::Closed) {
             $poll->voting_ends_at = $endsAt;
@@ -170,6 +175,20 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
         </div>
     </section>
 
+    @if ($poll->live_token)
+        <section class="space-y-2" x-data="{ copied: false }">
+            <h2 class="font-medium">{{ __('Live link for streaming') }}</h2>
+            <p class="field-hint">{{ __('Always shows the live results, even when they are hidden from participants. Add it as a browser source in OBS. Add ?theme=dark or ?theme=light to force a theme.') }}</p>
+            <div class="flex gap-2">
+                <input type="text" readonly value="{{ route('poll.live', $poll->live_token) }}" class="field-input" x-ref="live" x-on:focus="$el.select()" aria-label="{{ __('Live link for streaming') }}">
+                <button type="button" class="btn-secondary" x-on:click="navigator.clipboard.writeText($refs.live.value); copied = true; setTimeout(() => copied = false, 2000)">
+                    <span x-show="! copied">{{ __('Copy') }}</span>
+                    <span x-show="copied" x-cloak>{{ __('Copied') }}</span>
+                </button>
+            </div>
+        </section>
+    @endif
+
     <section class="space-y-2 rounded-2xl border border-winner bg-winner-soft p-4" x-data="{ copied: false }">
         <h2 class="font-medium">{{ __('Admin link') }}</h2>
         <p class="text-sm">{{ __('Keep this link private and save it now. It is the only way to manage the poll, and we cannot recover it for you.') }}</p>
@@ -225,6 +244,11 @@ new #[Layout('layouts.app', ['noindex' => true])] class extends Component
                 @error('endsAt') <p class="field-error">{{ $message }}</p> @enderror
             </div>
         @endif
+
+        <label class="flex items-center gap-2">
+            <input type="checkbox" wire:model="liveResultsVisible" class="size-4 accent-[var(--accent)]">
+            <span>{{ __('Show the results to participants while voting is open') }}</span>
+        </label>
 
         <div class="flex items-center gap-3">
             <button type="submit" class="btn-primary" wire:loading.attr="disabled">{{ __('Save changes') }}</button>

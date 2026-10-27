@@ -31,6 +31,8 @@ new class extends Component
 
     public string $endsAt = '';
 
+    public bool $liveResultsVisible = true;
+
     public bool $collectSuggestions = false;
 
     public string $suggestionsEndAt = '';
@@ -83,6 +85,7 @@ new class extends Component
             'maxChoices' => ['nullable', 'integer', 'min:1', ...($this->collectSuggestions ? [] : ['max:'.count($this->options)])],
             'rankingLimit' => ['nullable', 'integer', 'min:1', ...($this->collectSuggestions ? [] : ['max:'.count($this->options)])],
             'collectSuggestions' => ['boolean'],
+            'liveResultsVisible' => ['boolean'],
             'suggestionsEndAt' => [$this->collectSuggestions ? 'required' : 'nullable', 'date'],
             'maxSuggestions' => ['integer', 'min:1', 'max:20'],
             'includesTime' => ['boolean'],
@@ -162,6 +165,7 @@ new class extends Component
             'voting_ends_at' => $endsAt,
             'suggestions_ends_at' => $suggestionsEnd,
             'max_suggestions' => $this->maxSuggestions,
+            'live_results_visible' => $this->liveResultsVisible,
             'options' => array_map(fn (array $option): array => [
                 'label' => trim($option['label']) ?: null,
                 'date' => $option['date'] ?: null,
@@ -322,6 +326,11 @@ new class extends Component
                 @error('timezone') <p class="field-error">{{ $message }}</p> @enderror
             </div>
         </div>
+
+        <label class="flex items-center gap-2">
+            <input type="checkbox" wire:model="liveResultsVisible" class="size-4 accent-[var(--accent)]">
+            <span>{{ __('Show the results to participants while voting is open') }}</span>
+        </label>
 
         <p class="field-hint">
             {{ __('Polls and their votes are deleted :days days after voting ends.', ['days' => config('polls.retention_days')]) }}

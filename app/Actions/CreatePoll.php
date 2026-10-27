@@ -31,6 +31,7 @@ class CreatePoll
      *     voting_ends_at: CarbonInterface,
      *     suggestions_ends_at?: CarbonInterface|null,
      *     max_suggestions?: int|null,
+     *     live_results_visible?: bool,
      *     options: list<array{label: string|null, date: string|null, time: string|null}>,
      * }  $data
      * @return array{poll: Poll, admin_token: string}
@@ -43,6 +44,7 @@ class CreatePoll
             $poll = Poll::create([
                 'slug' => $this->uniqueSlug(),
                 'admin_token_hash' => Poll::hashToken($adminToken),
+                'live_token' => Str::random(24),
                 'title' => $data['title'],
                 'description' => $data['description'] ?? null,
                 'category' => $data['category'],
@@ -52,6 +54,7 @@ class CreatePoll
                 'timezone' => $data['timezone'],
                 'includes_time' => $data['category'] === Category::Dates && ($data['includes_time'] ?? false),
                 'max_suggestions' => $data['max_suggestions'] ?? 1,
+                'live_results_visible' => $data['live_results_visible'] ?? true,
                 'suggestions_starts_at' => isset($data['suggestions_ends_at']) ? now() : null,
                 'suggestions_ends_at' => $data['suggestions_ends_at'] ?? null,
                 'voting_starts_at' => $data['suggestions_ends_at'] ?? now(),

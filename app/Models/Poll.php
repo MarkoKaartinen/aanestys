@@ -18,6 +18,7 @@ use Illuminate\Support\Carbon;
  * @property Category $category
  * @property VotingMethod $voting_method
  * @property bool $includes_time
+ * @property bool $live_results_visible
  * @property Carbon|null $suggestions_starts_at
  * @property Carbon|null $suggestions_ends_at
  * @property Carbon $voting_starts_at
@@ -67,6 +68,7 @@ class Poll extends Model
             'category' => Category::class,
             'voting_method' => VotingMethod::class,
             'includes_time' => 'boolean',
+            'live_results_visible' => 'boolean',
             'suggestions_starts_at' => 'datetime',
             'suggestions_ends_at' => 'datetime',
             'voting_starts_at' => 'datetime',
@@ -101,6 +103,15 @@ class Poll extends Model
         $count = $this->options()->count();
 
         return min($this->ranking_limit ?? $count, $count);
+    }
+
+    /**
+     * Whether participants may see the standings right now. The creator can hide
+     * them until voting has ended; after that they are always public.
+     */
+    public function resultsVisibleToParticipants(): bool
+    {
+        return $this->live_results_visible || $this->phase() === PollPhase::Closed;
     }
 
     /**

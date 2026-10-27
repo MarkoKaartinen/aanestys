@@ -48,13 +48,13 @@ Source: MVP plan. Check items off as they ship.
 
 - [x] Results refresh with `wire:poll.5s.visible`, cached in Redis (`Cache::flexible`)
 - [ ] Throttle on results routes
-- [ ] Hide live results from participants (creator setting)
+- [x] Hide live results from participants (creator setting)
 
 ## After the MVP core
 
 - [ ] Games category (IGDB, cached metadata)
 - [ ] Books category (Open Library)
-- [ ] OBS-friendly live view and secret live link
+- [x] OBS-friendly live view and secret live link
 - [ ] Open Graph preview image for results
 - [ ] Translatable poll content (spatie/laravel-translatable) if needed
 

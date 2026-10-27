@@ -1,33 +1,12 @@
 <?php
 
 use App\Actions\CastVote;
-use App\Actions\CreatePoll;
-use App\Enums\Category;
 use App\Enums\PollPhase;
-use App\Enums\VotingMethod;
 use App\Models\Poll;
 use App\Models\PollOption;
 use App\Models\Vote;
 use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
-
-/**
- * @return array{poll: Poll, admin_token: string}
- */
-function createdPoll(): array
-{
-    return (new CreatePoll)->handle([
-        'title' => 'Next book',
-        'category' => Category::Custom,
-        'voting_method' => VotingMethod::Single,
-        'timezone' => 'Europe/Helsinki',
-        'voting_ends_at' => now()->addWeek(),
-        'options' => [
-            ['label' => 'Dune', 'date' => null, 'time' => null],
-            ['label' => 'Piranesi', 'date' => null, 'time' => null],
-        ],
-    ]);
-}
 
 test('shows the share and admin links to someone with the admin token', function () {
     ['poll' => $poll, 'admin_token' => $token] = createdPoll();

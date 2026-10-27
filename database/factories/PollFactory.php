@@ -27,6 +27,8 @@ class PollFactory extends Factory
             'description' => fake()->optional()->paragraph(),
             'category' => Category::Custom,
             'voting_method' => VotingMethod::Single,
+            'live_token' => Str::random(24),
+            'live_results_visible' => true,
             'max_suggestions' => 1,
             'timezone' => 'Europe/Helsinki',
             'voting_starts_at' => now()->subHour(),
