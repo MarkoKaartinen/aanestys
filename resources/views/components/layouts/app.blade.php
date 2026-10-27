@@ -6,6 +6,12 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        @unless ($noindex)
+            @foreach (config('localizer.supported_locales') as $alternate)
+                <link rel="alternate" hreflang="{{ $alternate }}" href="{{ Route::localizedUrl($alternate) }}">
+            @endforeach
+        @endunless
+
         @if ($noindex)
             <meta name="robots" content="noindex, nofollow">
             <meta name="referrer" content="no-referrer">

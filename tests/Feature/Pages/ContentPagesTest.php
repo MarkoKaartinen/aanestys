@@ -9,13 +9,13 @@ test('information pages are served in English', function (string $path, string $
     ['/cookies', 'Cookies we use'],
 ]);
 
-test('information pages are served in Finnish', function (string $path, string $text) {
+test('information pages are served in Finnish under translated paths', function (string $path, string $text) {
     $this->get("/fi$path")->assertOk()->assertSee($text);
 })->with([
-    ['/about', 'ilmainen äänestyspalvelu'],
-    ['/faq', 'Tarvitsenko tilin?'],
-    ['/privacy', 'Mitä tallennamme'],
-    ['/cookies', 'Käyttämämme evästeet'],
+    ['/tietoa', 'ilmainen äänestyspalvelu'],
+    ['/ukk', 'Tarvitsenko tilin?'],
+    ['/tietosuoja', 'Mitä tallennamme'],
+    ['/evasteet', 'Käyttämämme evästeet'],
 ]);
 
 test('the cookies page lists the cookies the service sets', function () {

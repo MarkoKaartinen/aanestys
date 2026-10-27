@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\RedirectToPreferredLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             SubstituteBindings::class,
         ]);
         $middleware->web(append: [
+            RedirectToPreferredLocale::class,
             SetLocale::class,
             RedirectLocale::class,
             SubstituteBindings::class,

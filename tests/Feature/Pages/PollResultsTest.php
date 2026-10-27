@@ -70,5 +70,5 @@ test('returns 404 for the results of an unknown poll', function () {
 test('shows the results in Finnish under the fi prefix', function () {
     [$poll] = votedPoll(Poll::factory()->create());
 
-    $this->get("/fi/p/{$poll->slug}/results")->assertOk()->assertSee('Reaaliaikaiset tulokset')->assertSee('0 osallistujaa');
+    $this->get("/fi/aanestys/{$poll->slug}/tulokset")->assertOk()->assertSee('Reaaliaikaiset tulokset')->assertSee('0 osallistujaa');
 });

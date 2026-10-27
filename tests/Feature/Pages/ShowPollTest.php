@@ -138,7 +138,7 @@ test('shows times in the voters timezone for a poll with times', function () {
 test('the voting form is shown in Finnish under the fi prefix', function () {
     [$poll] = votablePoll(Poll::factory()->create());
 
-    $this->get("/fi/p/{$poll->slug}")->assertOk()->assertSee('Äänestä');
+    $this->get("/fi/aanestys/{$poll->slug}")->assertOk()->assertSee('Äänestä');
 });
 
 test('a participant can suggest an option and remove it again', function () {
